@@ -1,0 +1,6 @@
+Payment succeeds : 4242424242424242
+Payment requires authentication: 4000002500003155
+Payment fails: 4000000000009995
+
+Postal code, CVC: any
+expiry date: any future date

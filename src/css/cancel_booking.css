@@ -1,0 +1,22 @@
+body {
+    /* background-color: #dee2e6; */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cancel-card { 
+    max-width: 450px; 
+    width: 100%; 
+}
+
+.refund-info { 
+    background-color: #e7f3ff; 
+    border-left: 4px solid #0d6efd; 
+    padding: 10px 15px; 
+}
+
+.no-refund { 
+    background-color: #fff3cd; 
+    border-left: 4px solid #ffc107; 
+}

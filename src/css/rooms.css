@@ -1,0 +1,295 @@
+/* ======== global ======== */
+body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Wrapper that adds spacing around the main content */
+.page-content {
+    padding: 3.5rem 0;
+}
+
+/* ======== nav ======== */
+/* the back to rooms link at the top */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #aaa;
+    text-decoration: none;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #ff4444;
+}
+
+/* ======== ROOM IMAGE PAGE //TODO ======== */
+.room-hero {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    /* Ensures image fills the box without stretching */
+    border-radius: 4px;
+    /* Sharp corners look more "edgy" */
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    /* Darker, deeper shadow */
+    border: 1px solid #333;
+    /* Subtle dark border */
+}
+
+/* ======== thumbnails ======== */
+.thumbnail-gallery {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.thumbnail-gallery img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+}
+
+/* hover and active states for thumbnails */
+.thumbnail-gallery img:hover,
+.thumbnail-gallery img.active {
+    border-color: #ff4444;
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.2);
+}
+
+/* ======== room content ======== */
+.room-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+}
+
+/* ======== room name and title ======== */
+.room-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin: 1.5rem 0 1rem 0;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px #000;
+}
+
+/* ======== diffifulty and fear badges ======== */
+.room-badges {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.room-badges .badge {
+    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+}
+
+/* section headings (e.g. "About This Room") */
+.room-details h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #ff4444;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+}
+
+.room-details h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #e0e0e0;
+}
+
+/* paragraph */
+.room-details p {
+    color: #ccc;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+/* ======== lists (bullet points) ======== */
+.room-details ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.room-details li {
+    color: #bbb;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+/* can change content to whatever you want, controls what is shown as the bullet point */
+.room-details li::before {
+    content: "-";
+    position: absolute;
+    left: 0;
+    font-size: 0.8rem;
+    color: #ff4444;
+}
+
+/* ======== pricing and bookings ======== */
+.pricing-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.price-label {
+    color: #888;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 0.2rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.price-details {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    text-align: left;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    padding: 1rem 0;
+}
+
+.price-details li {
+    padding: 0.5rem 0;
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* ======== ICONS FOR STATS!! ======== */
+.price-details li::before {
+    content: "⏱";
+    font-size: 1.2rem;
+    opacity: 0.7;
+}
+
+.price-details li:nth-child(2)::before {
+    content: "👥";
+}
+
+.price-details li:nth-child(3)::before {
+    content: "⭐";
+}
+
+.cancellation-note {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 1rem;
+    font-style: italic;
+}
+
+/* ======== buttons ======== */
+.book-btn {
+    background: #ff4444;
+    color: #fff;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.2);
+}
+
+.book-btn:hover {
+    background: #cc0000;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    text-decoration: none;
+}
+
+/* ======== rate our services button ======== */
+.rating-btn {
+    background: transparent;
+    color: #bbb;
+    border: 1px solid #444;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+}
+
+.rating-btn:hover {
+    background: #333;
+    color: #fff;
+    border-color: #fff;
+    text-decoration: none;
+}
+
+/* ======== responsiveness ======== */
+@media (max-width: 768px) {
+    .room-content {
+        grid-template-columns: 1fr;
+    }
+
+    .room-title {
+        font-size: 2rem;
+    }
+
+    .room-hero {
+        height: 250px;
+    }
+
+    .thumbnail-gallery {
+        margin-bottom: 2rem;
+        overflow-x: auto;
+    }
+}
+
+
+/* ======== footer ======== */
+#Rooms {
+    min-height: 800px;
+    transition: min-height 0.3s ease;
+}

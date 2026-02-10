@@ -1,32 +1,52 @@
-version: "3.8"
+#version: '3.9'
 
 services:
   web:
     build: .
+    container_name: php_web_app
     ports:
-      - "8080:80"
+      - "3000:80"
     volumes:
       - ./src:/var/www/html
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      DB_HOST: db
-      DB_NAME: todo_app
-      DB_USER: todo_user
-      DB_PASS: todo_pass
+      - DB_HOST=${DB_HOST:-db}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASS=${DB_PASSWORD:-secret}
+      - DB_NAME=${DB_NAME:-myapp_db}
+      - STRIPESECRETKEY=${STRIPESECRETKEY}
+      - SENDGRIDKEY=${SENDGRIDKEY}
+    networks:
+      - app-network
 
   db:
     image: mysql:8.0
-    restart: unless-stopped
+    container_name: mysql_db
+    restart: always
     environment:
-      MYSQL_DATABASE: todo_app
-      MYSQL_USER: todo_user
-      MYSQL_PASSWORD: todo_pass
-      MYSQL_ROOT_PASSWORD: root_pass
-    command: --default-authentication-plugin=mysql_native_password
+      #MYSQL_USER: ${DB_USER}
+      #MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./db/init/001-schema.sql:/docker-entrypoint-initdb.d/001-schema.sql
+      - ./db/init/002-seed-dev.sql:/docker-entrypoint-initdb.d/002-seed.sql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
 volumes:
   db_data:
+
+networks:
+  app-network:

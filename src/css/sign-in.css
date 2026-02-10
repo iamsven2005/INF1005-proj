@@ -1,0 +1,122 @@
+/* =========================================
+   1. GLOBAL & LAYOUT
+   ========================================= */
+html,
+body {
+  height: 100%;
+  background-color: #1a1a1a !important;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  /* Ensures the form is centered vertically */
+  min-height: calc(100vh - 200px); 
+}
+
+/* =========================================
+   2. SIGN-IN CARD STYLING
+   ========================================= */
+.form-signin {
+  width: 100%;
+  max-width: 380px; /* Slightly wider for better breathing room */
+  padding: 2rem;
+  margin: 0 auto;
+  
+  /* THEME: Dark Glass Effect */
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #333;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.form-signin img {
+  filter: invert(1) brightness(100%);
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+/* =========================================
+   3. INPUT FIELDS (Dark Mode)
+   ========================================= */
+.form-signin input.form-control {
+  background-color: #0a0a0a; /* Very dark grey inputs */
+  border: 1px solid #444;
+  color: #fff;
+}
+
+/* Change the text color of the placeholder/label */
+.form-signin .form-floating label {
+  color: #888;
+}
+
+/* Focus State: Blood Red Glow */
+.form-signin input.form-control:focus {
+  border-color: #ff4444;
+  box-shadow: 0 0 0 0.25rem rgba(255, 68, 68, 0.25);
+  color: #fff;
+}
+
+/* Specific styling for the top input (Email) */
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Specific styling for the bottom input (Password) */
+.form-signin input[type="password"] {
+  margin-bottom: 20px; /* Increased space before button */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* =========================================
+   4. BUTTONS & TEXT
+   ========================================= */
+/* Style the main "Sign in" button */
+.form-signin .btn-primary {
+  background-color: #ff4444;
+  border-color: #ff4444;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.form-signin .btn-primary:hover {
+  background-color: #cc0000;
+  border-color: #cc0000;
+  box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+}
+
+/* Headings inside the form */
+.form-signin h1 {
+  color: #ff4444;
+  text-shadow: 2px 2px 4px #000;
+  margin-bottom: 1.5rem;
+}
+
+/* Checkbox styling (Remember me) */
+.form-check-input {
+  background-color: #333;
+  border-color: #555;
+}
+
+.form-check-input:checked {
+  background-color: #ff4444;
+  border-color: #ff4444;
+}
+
+.checkbox {
+  margin-bottom: 1rem;
+  color: #ccc;
+}

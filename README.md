@@ -1,42 +1,28 @@
-## LAMP Todo (Docker)
+# inf1005-project
 
-This project runs a basic PHP + Apache + MySQL todo list using Docker Compose.
+# For desolatedstorm
+after db creation & test data is created and tested, export the db file
+1. Go to `Server -> Data Export`
+2. Select the correct schema
+3. Under Export options select `Dump Structure only`
+4. Export to `001-schema.sql`
+Then,
+repeat steps 1 & 2
+3. select `Dump Data` for export options
+4. Export to `002-seed-dev.sql`
+5. add boths files in the project `db/init/` folder
 
-### Prerequisites (Windows)
+---
 
-- Install Docker Desktop: https://www.docker.com/products/docker-desktop/
-- During install, enable WSL 2 integration when prompted.
-- Reboot if Docker asks you to.
+# SETUP INSTRUCTIONS
+1. Pull from staging (or clone if you haven't)
+2. Run `cp .env.example .env`
+3. Update `.env` with your own values (these are local credentials)
+4. If containers are still running, stop and remove volumes:
+   `docker compose down -v` OR `use the GUI`
+5. Start containers again:
+   `docker compose up -d` OR `use the GUI`
 
-### How to Run (Windows)
-
-1. Open PowerShell in this repo folder.
-2. Build and start the stack:
-
-```bash
-docker compose up --build
-```
-
-3. Open the app in your browser:
-
-```
-http://localhost:8080
-```
-
-4. Stop the stack:
-
-```bash
-docker compose down
-```
-
-### Notes
-
-- The MySQL data is stored in a named volume called `db_data`.
-- To reset the database, stop the stack and remove the volume:
-
-```bash
-docker compose down -v
-```
+---
 
 
-Feel free to delete, a simple TODO list in php
