@@ -11,7 +11,7 @@
     }
     
     // Stripe publishable key
-    $stripe_publishable_key = 'pk_test_51STfLcAksjEcZwsYPOGI0xqUKScqT1AS4GFHnubNNqd3e0YVWomPXk9cABvxKyuOc4yokyT8VtlvzXd6LkWHQiTG0003O6qTzj';
+    $stripe_publishable_key = 'pk_test_51PCLWrEl4ufwpjAdi9qVfAkBtj2h9Zjv4boXtEQCUUPb4GrMVkgLEHE7QjTiKIwBBuEGBxgyVhsapUNgr0zdMeC0008A8ZYofS';
     ?>
     
     <!-- Stripe Payment Processing Overlay -->

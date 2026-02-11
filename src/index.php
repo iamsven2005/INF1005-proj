@@ -233,9 +233,9 @@ $conn->close();
                 </div>
             </section>
         </div>
+
     </main>
     <?php include "inc/footer.inc.php" ?>
-</div>
 
 </body>
 

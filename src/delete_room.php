@@ -44,8 +44,33 @@ $result = $conn->query($sql);
 if ($result && $result->num_rows > 0) {
     $rooms = $result->fetch_all(MYSQLI_ASSOC);
 }
+
+$sql = "SELECT 
+            b.bookingID,
+            b.bookingRef,
+            b.bookingDate,
+            b.bookingTimeslot,
+            b.numPlayers,
+            b.totalPrice,
+            b.bookingStatus,
+            b.created_at,
+            r.roomName,
+            u.username,
+            u.email
+        FROM Bookings b
+        JOIN Rooms r ON b.Rooms_roomID = r.roomID
+        JOIN Users u ON b.Users_userID = u.userID
+        ORDER BY b.created_at DESC";
+
+$result = $conn->query($sql);
+$bookings = [];
+
+if ($result && $result->num_rows > 0) {
+    $bookings = $result->fetch_all(MYSQLI_ASSOC);
+}
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -164,6 +189,60 @@ $conn->close();
                 <a href="index.php" class="btn btn-outline-light">Back to Home</a>
             </div>
         </div>
+        <h2 class="text-center mb-4 text-warning">Manage Bookings</h2>
+
+<div class="table-responsive container">
+    <table class="table table-dark table-hover align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Reference</th>
+                <th>Room</th>
+                <th>User</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Players</th>
+                <th>Total ($)</th>
+                <th>Status</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($bookings)): ?>
+                <tr>
+                    <td colspan="10" class="text-center py-4">
+                        No bookings found.
+                    </td>
+                </tr>
+            <?php else: ?>
+                <?php foreach ($bookings as $booking): ?>
+                    <tr>
+                        <td><?= $booking['bookingID']; ?></td>
+                        <td><?= htmlspecialchars($booking['bookingRef']); ?></td>
+                        <td><?= htmlspecialchars($booking['roomName']); ?></td>
+                        <td>
+                            <?= htmlspecialchars($booking['username']); ?><br>
+                            <small><?= htmlspecialchars($booking['email']); ?></small>
+                        </td>
+                        <td><?= $booking['bookingDate']; ?></td>
+                        <td><?= $booking['bookingTimeslot']; ?></td>
+                        <td><?= $booking['numPlayers']; ?></td>
+                        <td>$<?= $booking['totalPrice']; ?></td>
+                        <td>
+                            <?php if ($booking['bookingStatus'] == 'Confirmed'): ?>
+                                <span class="badge bg-success">Confirmed</span>
+                            <?php else: ?>
+                                <span class="badge bg-danger">Cancelled</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= $booking['created_at']; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
     </main>
 
     <?php include "inc/footer.inc.php" ?>

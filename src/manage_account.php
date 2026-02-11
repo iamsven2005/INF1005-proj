@@ -15,6 +15,53 @@
 	// Fetch current user data
 	$userData = getUserData($user_id);
 	
+	$conn = getDbConnection();
+
+	// Upcoming (Confirmed only)
+	$sqlUpcoming = "SELECT 
+		b.bookingID, b.bookingRef, b.bookingDate, b.bookingTimeslot,
+		b.numPlayers, b.totalPrice, b.bookingStatus, b.created_at,
+		r.roomName, r.roomLocation
+	FROM Bookings b
+	JOIN Rooms r ON b.Rooms_roomID = r.roomID
+	WHERE b.Users_userID = ?
+	AND b.bookingStatus = 'Confirmed'
+	AND TIMESTAMP(b.bookingDate, b.bookingTimeslot) >= NOW()
+	ORDER BY b.bookingDate ASC, b.bookingTimeslot ASC";
+
+	// Past (includes Confirmed + Cancelled, you can change if you want)
+	$sqlPast = "SELECT 
+		b.bookingID, b.bookingRef, b.bookingDate, b.bookingTimeslot,
+		b.numPlayers, b.totalPrice, b.bookingStatus, b.created_at,
+		r.roomName, r.roomLocation
+	FROM Bookings b
+	JOIN Rooms r ON b.Rooms_roomID = r.roomID
+	WHERE b.Users_userID = ?
+	AND TIMESTAMP(b.bookingDate, b.bookingTimeslot) < NOW()
+	ORDER BY b.bookingDate DESC, b.bookingTimeslot DESC";
+
+	$upcomingBookings = [];
+	$pastBookings = [];
+
+	// prepared statements (safer)
+	$stmt = $conn->prepare($sqlUpcoming);
+	$stmt->bind_param("i", $user_id);
+	$stmt->execute();
+	$res = $stmt->get_result();
+	if ($res) $upcomingBookings = $res->fetch_all(MYSQLI_ASSOC);
+	$stmt->close();
+
+	$stmt = $conn->prepare($sqlPast);
+	$stmt->bind_param("i", $user_id);
+	$stmt->execute();
+	$res = $stmt->get_result();
+	if ($res) $pastBookings = $res->fetch_all(MYSQLI_ASSOC);
+	$stmt->close();
+
+	$conn->close();
+
+
+
 	if (!$userData) {
 		$errorMsg = "Unable to load user data.";
 	}
@@ -362,6 +409,118 @@
         </div>
       </div>
     </div>
+
+<!-- My Bookings -->
+<div class="card shadow-sm border-0 mt-4">
+  <div class="card-body p-4">
+    <h2 class="h5 mb-1">My bookings</h2>
+    <p class="text-muted mb-3">View upcoming and past bookings.</p>
+
+    <ul class="nav nav-pills mb-3" id="bookingTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="pill" data-bs-target="#upcoming"
+                type="button" role="tab" aria-controls="upcoming" aria-selected="true">
+          Upcoming
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="past-tab" data-bs-toggle="pill" data-bs-target="#past"
+                type="button" role="tab" aria-controls="past" aria-selected="false">
+          Past
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="bookingTabsContent">
+      <!-- Upcoming -->
+      <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+        <?php if (empty($upcomingBookings)): ?>
+          <div class="text-muted">No upcoming bookings.</div>
+        <?php else: ?>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Ref</th>
+                  <th>Room</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Players</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($upcomingBookings as $b): ?>
+                  <tr>
+                    <td class="fw-semibold"><?= htmlspecialchars($b['bookingRef']); ?></td>
+                    <td>
+                      <?= htmlspecialchars($b['roomName']); ?>
+                      <div class="text-muted small"><?= htmlspecialchars($b['roomLocation']); ?></div>
+                    </td>
+                    <td><?= htmlspecialchars($b['bookingDate']); ?></td>
+                    <td><?= htmlspecialchars(substr($b['bookingTimeslot'], 0, 5)); ?></td>
+                    <td><?= (int)$b['numPlayers']; ?></td>
+                    <td>$<?= htmlspecialchars($b['totalPrice']); ?></td>
+                    <td><span class="badge bg-success">Confirmed</span></td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <!-- Past -->
+      <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+        <?php if (empty($pastBookings)): ?>
+          <div class="text-muted">No past bookings.</div>
+        <?php else: ?>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Ref</th>
+                  <th>Room</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Players</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($pastBookings as $b): ?>
+                  <tr>
+                    <td class="fw-semibold"><?= htmlspecialchars($b['bookingRef']); ?></td>
+                    <td>
+                      <?= htmlspecialchars($b['roomName']); ?>
+                      <div class="text-muted small"><?= htmlspecialchars($b['roomLocation']); ?></div>
+                    </td>
+                    <td><?= htmlspecialchars($b['bookingDate']); ?></td>
+                    <td><?= htmlspecialchars(substr($b['bookingTimeslot'], 0, 5)); ?></td>
+                    <td><?= (int)$b['numPlayers']; ?></td>
+                    <td>$<?= htmlspecialchars($b['totalPrice']); ?></td>
+                    <td>
+                      <?php if ($b['bookingStatus'] === 'Cancelled'): ?>
+                        <span class="badge bg-danger">Cancelled</span>
+                      <?php else: ?>
+                        <span class="badge bg-secondary">Completed</span>
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php endif; ?>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
   <?php endif; ?>
 </main>
 

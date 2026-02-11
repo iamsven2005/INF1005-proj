@@ -10,6 +10,20 @@ function sanitize_input($data)
     return $data;
 }
 
+
+function getDBconnection()
+{
+    list($db_host, $db_user, $db_pass, $db_name) = getDBEnvVar();
+    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    return $conn;
+}
+
+
+
 // Function to create DB connection using credentials in env var
 function getDBEnvVar()
 {
