@@ -20,7 +20,6 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['
     <title>Create New Room - Escape Quest</title>
     <?php include "inc/head.inc.php" ?>
     <link rel="stylesheet" href="css/rooms.css">
-    <script defer src="js/index.js"></script>
 </head>
 
 <body>

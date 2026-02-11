@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
         try {
             $user_email = $user_result['email'];
-            $cancel_link = "https://escapify.net/cancel_booking.php?token=" . $cancel_token;
+            $cancel_link = "https://Escapy.net/cancel_booking.php?token=" . $cancel_token;
             
             // Create plain text version
             $message = "Your booking has been confirmed!\n\n";

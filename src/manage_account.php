@@ -172,121 +172,199 @@
 <body>
     <?php include "inc/nav.inc.php"; ?>
 	
-	<main class="container my-5">
-		<h1 class="mb-4">Account Management</h1>
-		
-		<?php if (!empty($successMsg)): ?>
-		<div class="alert alert-success alert-dismissible fade show" role="alert">
-			<?= $successMsg ?>
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-		<?php endif; ?>
-		
-		<?php if (!empty($errorMsg)): ?>
-		<div class="alert alert-danger alert-dismissible fade show" role="alert">
-			<?= $errorMsg ?>
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-		<?php endif; ?>
-		
-		<?php if ($userData): ?>
-		
-		<!-- Username Section -->
-		<div class="account-section">
-			<h3>Username</h3>
-			<div class="info-display">
-				<strong>Current Username:</strong> <?= htmlspecialchars($userData['username']) ?>
-			</div>
-			<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#usernameForm">
-				Change Username
-			</button>
-			<div class="collapse mt-3" id="usernameForm">
-				<form method="POST" class="card card-body">
-					<div class="mb-3">
-						<label for="username" class="form-label">New Username</label>
-						<input type="text" class="form-control" id="username" name="username" 
-							   value="<?= htmlspecialchars($userData['username']) ?>" required>
-						<div class="form-text">3-30 characters, letters, numbers, underscores, and hyphens only</div>
-					</div>
-					<button type="submit" name="update_username" class="btn btn-success">Update Username</button>
-				</form>
-			</div>
-		</div>
-		
-		<!-- Email Section -->
-		<div class="account-section">
-			<h3>Email Address</h3>
-			<div class="info-display">
-				<strong>Current Email:</strong> <?= htmlspecialchars($userData['email']) ?>
-			</div>
-			<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#emailForm">
-				Change Email
-			</button>
-			<div class="collapse mt-3" id="emailForm">
-				<form method="POST" class="card card-body">
-					<div class="mb-3">
-						<label for="email" class="form-label">New Email Address</label>
-						<input type="email" class="form-control" id="email" name="email" 
-							   value="<?= htmlspecialchars($userData['email']) ?>" required>
-					</div>
-					<button type="submit" name="update_email" class="btn btn-success">Update Email</button>
-				</form>
-			</div>
-		</div>
-		
-		<!-- Password Section -->
-		<div class="account-section">
-			<h3>Password</h3>
-			<div class="info-display">
-				<strong>Password:</strong> ••••••••
-			</div>
-			<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#passwordForm">
-				Change Password
-			</button>
-			<div class="collapse mt-3" id="passwordForm">
-				<form method="POST" class="card card-body">
-					<div class="mb-3">
-						<label for="current_password" class="form-label">Current Password</label>
-						<input type="password" class="form-control" id="current_password" 
-							   name="current_password" required>
-					</div>
-					<div class="mb-3">
-						<label for="new_password" class="form-label">New Password</label>
-						<input type="password" class="form-control" id="new_password" 
-							   name="new_password" required>
-						<div class="form-text">
-							Must be 8+ characters with uppercase, lowercase, number, and special character
-						</div>
-					</div>
-					<div class="mb-3">
-						<label for="confirm_password" class="form-label">Confirm New Password</label>
-						<input type="password" class="form-control" id="confirm_password" 
-							   name="confirm_password" required>
-					</div>
-					<button type="submit" name="update_password" class="btn btn-success">Update Password</button>
-				</form>
-			</div>
-		</div>
-		
-		<!-- Account Creation Date -->
-		<div class="account-section">
-			<h3>Account Information</h3>
-			<div class="info-display">
-				<strong>Member Since:</strong> <?= date('F j, Y', strtotime($userData['created_at'])) ?>
-			</div>
-		</div>
-		
-		<!-- Danger Zone - Delete Account -->
-		<div class="account-section danger-zone">
-			<h3 class="text-danger">Danger Zone</h3>
-			<p><strong>Delete Account:</strong> This action cannot be undone. All your data will be permanently deleted.</p>
-			<button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-				Delete Account
-			</button>
-		</div>
-		
-		<?php endif; ?>
-	</main>
+<main class="container py-5">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Account settings</h1>
+      <p class="text-muted mb-0">Manage your profile details and security preferences.</p>
+    </div>
+    <a href="index.php" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Back to home
+    </a>
+  </div>
+
+  <?php if (!empty($successMsg)): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <?= $successMsg ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <?php endif; ?>
+
+  <?php if (!empty($errorMsg)): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <?= $errorMsg ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <?php endif; ?>
+
+  <?php if ($userData): ?>
+    <div class="row g-4">
+      <!-- Left column: Profile -->
+      <div class="col-lg-7">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start justify-content-between">
+              <div>
+                <h2 class="h5 mb-1">Profile</h2>
+                <p class="text-muted mb-0">Update your username and email address.</p>
+              </div>
+              <span class="badge bg-light text-dark border">
+                Member since <?= htmlspecialchars(date('M Y', strtotime($userData['created_at']))) ?>
+              </span>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Username -->
+            <div class="mb-4">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="text-muted small">Username</div>
+                  <div class="fw-semibold"><?= htmlspecialchars($userData['username']) ?></div>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#usernameForm">
+                  Edit
+                </button>
+              </div>
+
+              <div class="collapse mt-3" id="usernameForm">
+                <form method="POST" class="border rounded-3 p-3 bg-light">
+                  <div class="mb-2">
+                    <label for="username" class="form-label small mb-1">New username</label>
+                    <input type="text" class="form-control" id="username" name="username"
+                           value="<?= htmlspecialchars($userData['username']) ?>" required>
+                    <div class="form-text">3–30 characters. Letters, numbers, underscores, hyphens.</div>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <button type="submit" name="update_username" class="btn btn-success">
+                      Save changes
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary"
+                            data-bs-toggle="collapse" data-bs-target="#usernameForm">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-0">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="text-muted small">Email</div>
+                  <div class="fw-semibold"><?= htmlspecialchars($userData['email']) ?></div>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#emailForm">
+                  Edit
+                </button>
+              </div>
+
+              <div class="collapse mt-3" id="emailForm">
+                <form method="POST" class="border rounded-3 p-3 bg-light">
+                  <div class="mb-2">
+                    <label for="email" class="form-label small mb-1">New email address</label>
+                    <input type="email" class="form-control" id="email" name="email"
+                           value="<?= htmlspecialchars($userData['email']) ?>" required>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <button type="submit" name="update_email" class="btn btn-success">
+                      Save changes
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary"
+                            data-bs-toggle="collapse" data-bs-target="#emailForm">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Account Info -->
+        <div class="card shadow-sm border-0 mt-4">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-1">Account information</h2>
+            <p class="text-muted mb-3">Basic information about your account.</p>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="p-3 border rounded-3">
+                  <div class="text-muted small">User ID</div>
+                  <div class="fw-semibold"><?= htmlspecialchars((string)$user_id) ?></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 border rounded-3">
+                  <div class="text-muted small">Created</div>
+                  <div class="fw-semibold"><?= htmlspecialchars(date('F j, Y', strtotime($userData['created_at']))) ?></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: Security + Danger -->
+      <div class="col-lg-5">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-1">Security</h2>
+            <p class="text-muted mb-0">Change your password regularly to keep your account safe.</p>
+
+            <hr class="my-4">
+
+            <button class="btn btn-primary w-100" data-bs-toggle="collapse" data-bs-target="#passwordForm">
+              Change password
+            </button>
+
+            <div class="collapse mt-3" id="passwordForm">
+              <form method="POST" class="border rounded-3 p-3 bg-light">
+                <div class="mb-2">
+                  <label for="current_password" class="form-label small mb-1">Current password</label>
+                  <input type="password" class="form-control" id="current_password" name="current_password" required>
+                </div>
+                <div class="mb-2">
+                  <label for="new_password" class="form-label small mb-1">New password</label>
+                  <input type="password" class="form-control" id="new_password" name="new_password" required>
+                  <div class="form-text">8+ chars with upper, lower, number, special.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="confirm_password" class="form-label small mb-1">Confirm new password</label>
+                  <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                </div>
+                <div class="d-flex gap-2">
+                  <button type="submit" name="update_password" class="btn btn-success">
+                    Save
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary"
+                          data-bs-toggle="collapse" data-bs-target="#passwordForm">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mt-4 border-danger-subtle">
+          <div class="card-body p-4">
+            <h2 class="h5 text-danger mb-1">Danger zone</h2>
+            <p class="text-muted mb-3">Delete your account and permanently remove your data. This cannot be undone.</p>
+
+            <button class="btn btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteModal">
+              Delete account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <?php endif; ?>
+</main>
+
 
 	<!-- Delete Account Confirmation Modal -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">

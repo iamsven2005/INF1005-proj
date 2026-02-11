@@ -27,9 +27,8 @@ $conn->close();
 <html lang="en">
 
 <head>
-    <title>Escapify</title>
+    <title>Escapy</title>
     <?php include "inc/head.inc.php" ?>
-    <script defer src="js/index.js"></script>
 </head>
 
 <body>
@@ -39,7 +38,7 @@ $conn->close();
     <!-- search bar -->
     <div class="search-section section-gap text-center">
         <div class="input-group rounded mx-auto w-100 w-sm-75 w-md-50" style="max-width:480px; padding-top:20px; padding-bottom:20px;">
-            <input type="search" class="form-control rounded" onkeyup="filterRooms()" placeholder="Search for rooms..." aria-label="Search"
+            <input type="search" id="search" class="form-control rounded" onkeyup="filterRooms()" placeholder="Search for rooms..." aria-label="Search"
                 aria-describedby="search-addon">
             <button type="button" class="btn btn-outline-primary" id="search-addon">Search</button>
         </div>
@@ -49,11 +48,22 @@ $conn->close();
         <div class="container">
 
             <!-- filter -->
-            <div class="filter-box">
-                <h3 class="mb-3">Find Your Perfect Challenge</h3>
-
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="mb-3">Find Your Perfect Challenge</h2>
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#filterCollapse"
+                        aria-expanded="true"
+                        aria-controls="filterCollapse"
+                        id="filterToggleBtn">
+                    Hide filters
+                </button>
+            </div>
+            <div class="collapse" id="filterCollapse">
+                <div class="filter-box">
                 <div class="mb-3">
-                    <h6>Fear Factor</h6>
+                    <h3>Fear Factor</h3>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="fear" value="all" id="fearAll" checked>
                         <label class="form-check-label" for="fearAll">All</label>
@@ -84,7 +94,7 @@ $conn->close();
 
 
                 <div class="mb-3">
-                    <h6>Experience Type</h6>
+                    <h3>Experience Type</h3>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="actor" value="all" id="actorAll" checked>
                         <label class="form-check-label" for="actorAll">All</label>
@@ -102,7 +112,7 @@ $conn->close();
                 </div>
 
                 <div class="mb-3">
-                    <h6>Difficulty</h6>
+                    <h3>Difficulty</h3>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="difficulty" value="all" id="all-difficulty" checked>
                         <label class="form-check-label" for="all-difficulty">All</label>
@@ -130,7 +140,7 @@ $conn->close();
                 </div>
 
                 <div class="mb-3">
-                    <h6>Genre</h6>
+                    <h3>Genre</h3>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" value="horror" id="genreHorror">
                         <label class="form-check-label" for="genreHorror">Horror</label>
@@ -153,10 +163,10 @@ $conn->close();
                     </div>
                 </div>
             </div>
-
+  </div>
             <!-- replaced static room count with dynamic allocation -->
             <section id="Rooms">
-                <h5 class="mb-3" style="padding-top: 40px;">Rooms</h5>
+                <h4 class="mb-3" style="padding-top: 40px;">Rooms</h4>
                 <div class="text-center my-4">
                     <p class="text-muted">Showing <?php echo $roomCount; ?> rooms</p>
                 </div>
@@ -224,8 +234,8 @@ $conn->close();
             </section>
         </div>
     </main>
-    <script src="js/main.js"></script>
     <?php include "inc/footer.inc.php" ?>
+</div>
 
 </body>
 

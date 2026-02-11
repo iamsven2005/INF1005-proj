@@ -97,7 +97,7 @@ if ($success) {
         // Email Artifact
         $message = 'Registration Successful.\n\n';
         $message = 'Hello ' . $username . ',\n';
-        $message .= "Your account has successfully been created with Escapify\n";
+        $message .= "Your account has successfully been created with Escapy\n";
         $message .= 'We hope you enjoy your time here!';
 
         $html_message = '
@@ -161,11 +161,11 @@ if ($success) {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>Welcome to Escapify!</h1>
+                        <h1>Welcome to Escapy!</h1>
                     </div>
                     <div class="content">
                         <h2>Hello ' . $username . ',</h2>
-                        <p>Your account has been successfully created on <strong>Escapify</strong>.</p>
+                        <p>Your account has been successfully created on <strong>Escapy</strong>.</p>
                         <p>You can now log in and start using our services.</p>
                         <p>Thank you for registering!</p>
                     </div>

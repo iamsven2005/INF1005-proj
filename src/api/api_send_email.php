@@ -5,9 +5,9 @@ function send_email($message, $html_message, $user_email){
 
     // Send with SendGrid
     $email = new \SendGrid\Mail\Mail();
-    $email->setFrom("noreply@escapify.net", "Escapify");
-    $email->setReplyTo("support@escapify.net", "Escapify Support");
-    $email->setSubject("Booking Confirmation - Escapify");
+    $email->setFrom("noreply@Escapy.net", "Escapy");
+    $email->setReplyTo("support@Escapy.net", "Escapy Support");
+    $email->setSubject("Booking Confirmation - Escapy");
     $email->addTo($user_email);
     $email->addContent("text/plain", $message);
     $email->addContent("text/html", $html_message);

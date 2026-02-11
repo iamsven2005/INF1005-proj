@@ -42,7 +42,7 @@ $room_name = htmlspecialchars($_GET['name']);
             <input type="hidden" name="room_name" value="<?php echo $room_name; ?>">
             
             <div class="mb-4">
-                <label class="form-label">Rating *</label>
+                <label class="form-label text-white">Rating *</label>
                 <div class="star-rating">
                     <input type="radio" id="star5" name="rating" value="5" required />
                     <label for="star5" title="5 stars">★</label>
@@ -62,7 +62,7 @@ $room_name = htmlspecialchars($_GET['name']);
             </div>
 
             <div class="mb-3">
-                <label for="comment" class="form-label">Comment (Optional)</label>
+                <label for="comment" class="form-label text-white">Comment (Optional)</label>
                 <textarea name="comment" id="comment" class="form-control" rows="5" 
                     placeholder="Tell us about your experience..."></textarea>
             </div>
