@@ -119,6 +119,9 @@
         $(".timeslots-container").empty();
         $(".booking-form").hide();
         $(".checkout-form").hide(); // Also hide checkout
+        
+    // Start auto-refresh for this date
+    startTimeslotAutoRefresh(date);
 
         bookingPost(formattedDate).done(function(response) {
             if (!response.success) {
@@ -175,6 +178,49 @@
     var default_pax = min_players;
     // Global booking data to be used after payment
     var bookingData = {};
+    
+    // Auto-refresh timer for timeslots
+    var timeslotRefreshInterval;
+    var currentDisplayedDate = null;
+    
+    function startTimeslotAutoRefresh(date) {
+        // Clear any existing refresh timer
+        stopTimeslotAutoRefresh();
+        
+        currentDisplayedDate = date;
+        
+        // Refresh every 30 seconds to show newly available slots
+        timeslotRefreshInterval = setInterval(function() {
+            if (currentDisplayedDate && !$(".checkout-form").is(":visible")) {
+                console.log("Auto-refreshing timeslots...");
+                var formattedDate = formatDate(currentDisplayedDate);
+                
+                bookingPost(formattedDate).done(function(response) {
+                    if (response.success && response.available_slots) {
+                        // Only update if slots have changed
+                        var currentSlots = $(".timeslot .event-name").map(function() {
+                            return $(this).text();
+                        }).get().sort().join(",");
+                        
+                        var newSlots = response.available_slots.sort().join(",");
+                        
+                        if (currentSlots !== newSlots) {
+                            console.log("Timeslots changed, updating display");
+                            show_timings(currentDisplayedDate);
+                        }
+                    }
+                });
+            }
+        }, 30000); // 30 seconds
+    }
+    
+    function stopTimeslotAutoRefresh() {
+        if (timeslotRefreshInterval) {
+            clearInterval(timeslotRefreshInterval);
+            timeslotRefreshInterval = null;
+        }
+        currentDisplayedDate = null;
+    }
 
     function timeslot_click(event) {
         $(".timeslot").removeClass("active-timeslot");
@@ -272,8 +318,14 @@
                     // Show checkout form
                     $(".timeslots-container").hide(250);
                     $(".booking-container").hide(250);
+                    
+                                        // Stop auto-refreshing timeslots when in checkout
+                                        stopTimeslotAutoRefresh();
+                    
                     $(".checkout-form").show(250, function() {
                         // Initialize Stripe payment
+                            stopTimeslotAutoRefresh();
+                            stopTimeslotAutoRefresh();
                         if (typeof initializePayment === 'function') {
                             initializePayment();
                         }
@@ -282,14 +334,45 @@
                         startHoldTimer(response.expires_in_seconds);
                     }); 
                 } else {
-                    alert(response.message || "Unable to hold this time slot. Please try another slot.");
-                    window.parent.location.reload();
+                    // Handle different conflict types
+                    var errorMsg = response.message || "Unable to hold this time slot.";
+                    var shouldRefresh = false;
+                    
+                    if (response.conflict_type === 'booked') {
+                        errorMsg = "⚠️ This time slot has just been booked.\n\nPlease select another time slot.";
+                        shouldRefresh = true;
+                    } else if (response.conflict_type === 'held') {
+                        var waitMinutes = response.retry_in_seconds ? Math.ceil(response.retry_in_seconds / 60) : 5;
+                        errorMsg = "⏳ Another user is currently booking this slot.\n\n" + 
+                                  (response.suggested_action || "Please try a different time or wait " + waitMinutes + " minute(s).");
+                        shouldRefresh = true;
+                    }
+                    
+                    alert(errorMsg);
+                    
+                    if (shouldRefresh) {
+                        // Refresh the timeslots to show current availability
+                        var selectedDay = $(".active-date").attr("id");
+                        if (selectedDay) {
+                            var month = months.indexOf($(".calendar-month").text());
+                            var year = new Date().getFullYear();
+                            var selectedDate = new Date(year, month, selectedDay);
+                            show_timings(selectedDate);
+                        }
+                    }
                 }
             },
             error: function(xhr, status, error) {
                 console.error("Error holding slot:", error);
-                alert("Unable to hold this time slot. Please try again.");
-                window.parent.location.reload();
+                alert("❌ Network error while trying to hold this time slot.\n\nPlease check your connection and try again.");
+                // Refresh timeslots
+                var selectedDay = $(".active-date").attr("id");
+                if (selectedDay) {
+                    var month = months.indexOf($(".calendar-month").text());
+                    var year = new Date().getFullYear();
+                    var selectedDate = new Date(year, month, selectedDay);
+                    show_timings(selectedDate);
+                }
             }
         });
     }
@@ -380,16 +463,59 @@
             success: function(response) {
                 if (response.success) {
                     console.log("Booking saved successfully");
-                    // Redirect to success page or show confirmation
+                    // Clear the hold timer
+                    if (holdTimerInterval) {
+                        clearInterval(holdTimerInterval);
+                    }
+                    // Redirect to success page
                     window.location.href = 'booking_success.php?booking_ref=' + response.booking_ref;
                 } else {
-                    alert("Error saving booking: " + response.message);
-                    window.parent.location.reload();
+                    // Handle different conflict types
+                    console.error("Booking failed:", response);
+                    
+                    var errorMsg = response.message || "Error saving booking";
+                    var shouldReload = false;
+                    
+                    if (response.conflict_type === 'hold_expired') {
+                        errorMsg = "⏰ Your hold on this time slot has expired.\n\n" +
+                                  "Please return to the calendar and select your time slot again.";
+                        shouldReload = true;
+                    } else if (response.conflict_type === 'double_booking_prevented') {
+                        errorMsg = "⚠️ This time slot was just booked by another user.\n\n" +
+                                  "Your payment was not processed. Please select a different time slot.";
+                        shouldReload = true;
+                    }
+                    
+                    alert(errorMsg);
+                    
+                    if (shouldReload || response.suggested_action === 'return_to_calendar') {
+                        fetch("api/api_generate_token.php")
+                            .then(response => {
+                                if (!response.ok) throw new Error("Unable to get token");
+                                location.reload();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                location.reload();
+                            });
+                    }
                 }
             },
             error: function(xhr, status, error) {
                 console.error("Error saving booking:", error);
-                alert("Payment processed but booking save failed. Please contact support.");
+                console.error("Response:", xhr.responseText);
+                
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response && response.message) {
+                        alert("❌ Booking Error:\n\n" + response.message);
+                    } else {
+                        alert("❌ Payment processed but booking save failed.\n\nPlease contact support with this error:\n" + error);
+                    }
+                } catch(e) {
+                    alert("❌ Payment processed but booking save failed.\n\nPlease contact support.");
+                }
+                
                 window.parent.location.reload(true);
             }
         });

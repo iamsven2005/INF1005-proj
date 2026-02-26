@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Connection failed: " . $conn->connect_error);
         }
 
-        // Start transaction
+        // Start transaction with proper isolation
         $conn->begin_transaction();
 
         // Clean up expired holds
@@ -71,13 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cleanup_stmt->execute();
         $cleanup_stmt->close();
 
-        // Check if slot is already booked (confirmed/completed)
+        // Check if slot is already booked with row-level locking to prevent race conditions
         $check_booking = $conn->prepare("
-            SELECT COUNT(*) as count FROM Bookings 
+            SELECT bookingID FROM Bookings 
             WHERE bookingDate = ? 
             AND bookingTimeslot = ? 
             AND Rooms_roomID = ? 
             AND bookingStatus IN ('Confirmed', 'Completed')
+            FOR UPDATE
         ");
         $check_booking->bind_param("ssi", $date, $time, $room_id);
         $check_booking->execute();
@@ -85,16 +86,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $booking_row = $booking_result->fetch_assoc();
         $check_booking->close();
         
-        if ($booking_row['count'] > 0) {
+        if ($booking_row) {
             $conn->rollback();
+            error_log("Hold attempt failed - slot already booked: date=$date, time=$time, room=$room_id, user=$user_id");
             echo json_encode(array(
                 'success' => false,
-                'message' => 'This time slot is already booked.'
+                'message' => 'This time slot is already booked. Please select another time.',
+                'conflict_type' => 'booked'
             ));
             exit();
         }
 
-        // Check if this user already holds THIS specific slot
+        // Check if this user already holds THIS specific slot with locking
         $check_own_hold = $conn->prepare("
             SELECT holdID, expires_at 
             FROM BookingHolding 
@@ -103,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             AND Rooms_roomID = ? 
             AND Users_userID = ?
             AND expires_at > NOW()
+            FOR UPDATE
         ");
         $check_own_hold->bind_param("ssii", $date, $time, $room_id, $user_id);
         $check_own_hold->execute();
@@ -110,34 +114,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $own_hold = $own_hold_result->fetch_assoc();
         $check_own_hold->close();
 
-        // If user already holds this slot, return remaining time without refreshing
+        // If user already holds this slot, extend the hold to 5 minutes from now
         if ($own_hold) {
+            // Update the expiration time
+            $new_expires_at = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+            $update_hold = $conn->prepare("
+                UPDATE BookingHolding 
+                SET expires_at = ? 
+                WHERE holdID = ?
+            ");
+            $update_hold->bind_param("si", $new_expires_at, $own_hold['holdID']);
+            $update_hold->execute();
+            $update_hold->close();
+            
             $conn->commit();
             $conn->close();
 
-            $expires_at = new DateTime($own_hold['expires_at']);
-            $now = new DateTime();
-            $remaining_seconds = max(0, $expires_at->getTimestamp() - $now->getTimestamp());
-
+            error_log("Hold refreshed for existing hold: hold_id={$own_hold['holdID']}, user=$user_id");
+            
             echo json_encode(array(
                 'success' => true,
-                'message' => 'You already hold this slot',
+                'message' => 'Your hold has been refreshed for another 5 minutes',
                 'hold_id' => $own_hold['holdID'],
-                'expires_at' => $own_hold['expires_at'],
-                'expires_in_seconds' => $remaining_seconds,
-                'is_existing_hold' => true
+                'expires_at' => $new_expires_at,
+                'expires_in_seconds' => 300,
+                'is_existing_hold' => true,
+                'was_refreshed' => true
             ));
             exit();
         }
 
-        // Check if slot is currently held by another user
+        // Check if slot is currently held by another user with locking
         $check_hold = $conn->prepare("
-            SELECT COUNT(*) as count FROM BookingHolding 
+            SELECT holdID, Users_userID, expires_at 
+            FROM BookingHolding 
             WHERE holdDate = ? 
             AND holdTimeslot = ? 
             AND Rooms_roomID = ? 
             AND expires_at > NOW()
             AND Users_userID != ?
+            FOR UPDATE
         ");
         $check_hold->bind_param("ssii", $date, $time, $room_id, $user_id);
         $check_hold->execute();
@@ -145,11 +161,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hold_row = $hold_result->fetch_assoc();
         $check_hold->close();
         
-        if ($hold_row && $hold_row['count'] > 0) {
+        if ($hold_row) {
             $conn->rollback();
+            $expires_at = new DateTime($hold_row['expires_at']);
+            $now = new DateTime();
+            $remaining_seconds = max(0, $expires_at->getTimestamp() - $now->getTimestamp());
+            
+            error_log("Hold attempt failed - slot held by another user: date=$date, time=$time, room=$room_id, requesting_user=$user_id, holding_user={$hold_row['Users_userID']}");
+            
             echo json_encode(array(
                 'success' => false,
-                'message' => 'This time slot is currently being booked by another user. Please try again in a few minutes.'
+                'message' => 'This time slot is currently being booked by another user.',
+                'conflict_type' => 'held',
+                'retry_in_seconds' => $remaining_seconds,
+                'suggested_action' => 'Please select a different time slot or wait ' . ceil($remaining_seconds / 60) . ' minute(s) and try again.'
             ));
             exit();
         }

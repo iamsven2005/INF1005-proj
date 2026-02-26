@@ -117,28 +117,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $price->execute();
         $price_result = $price->get_result()->fetch_array();
         $price->close();
-        if(!$price_result) {
+        if (!$price_result) {
             $success = false;
             $messages .= "Failed to get room price. ";
         }
         $subtotal = $price_result['roomPriceOffPeak'] * $pax;
 
-        // Check if slot is still available
+        // Start transaction for atomic booking operation
+        $conn->begin_transaction();
+
+        // Verify user still has a valid hold on this slot
+        $verify_hold = $conn->prepare("
+            SELECT holdID, expires_at 
+            FROM BookingHolding 
+            WHERE holdDate = ? 
+            AND holdTimeslot = ? 
+            AND Rooms_roomID = ? 
+            AND Users_userID = ?
+            AND expires_at > NOW()
+            FOR UPDATE
+        ");
+        $verify_hold->bind_param("ssii", $date, $time, $room_id, $user_id);
+        $verify_hold->execute();
+        $hold_result = $verify_hold->get_result();
+        $user_hold = $hold_result->fetch_assoc();
+        $verify_hold->close();
+
+        if (!$user_hold) {
+            $conn->rollback();
+            error_log("Checkout failed - no valid hold: date=$date, time=$time, room=$room_id, user=$user_id");
+            echo json_encode(array(
+                'success' => false,
+                'message' => 'Your hold on this time slot has expired. Please select a time slot again.',
+                'conflict_type' => 'hold_expired',
+                'suggested_action' => 'return_to_calendar'
+            ));
+            exit();
+        }
+
+        // Check if slot is still available with row-level locking
         $check_stmt = $conn->prepare("
-            SELECT COUNT(*) as count FROM Bookings 
+            SELECT bookingID FROM Bookings 
             WHERE bookingDate = ? 
             AND bookingTimeslot = ? 
             AND Rooms_roomID = ? 
             AND bookingStatus IN ('Confirmed', 'Completed')
+            FOR UPDATE
         ");
         $check_stmt->bind_param("ssi", $date, $time, $room_id);
         $check_stmt->execute();
         $check_result = $check_stmt->get_result();
-        $row = $check_result->fetch_assoc();
+        $existing_booking = $check_result->fetch_assoc();
+        $check_stmt->close();
         
-        if ($row['count'] > 0) {
-            $success = false;
-            $messages .= "This timeslot is no longer available. ";
+        if ($existing_booking) {
+            $conn->rollback();
+            error_log("Checkout failed - slot already booked: date=$date, time=$time, room=$room_id, user=$user_id, existing_booking={$existing_booking['bookingID']}");
+            echo json_encode(array(
+                'success' => false,
+                'message' => 'This timeslot has just been booked by another user. Please select a different time.',
+                'conflict_type' => 'double_booking_prevented',
+                'suggested_action' => 'return_to_calendar'
+            ));
+            exit();
         }
 
         // Insert booking with "Confirmed" status
@@ -172,6 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!$success) {
+            $conn->rollback();
             echo json_encode(array(
             'success' => $success,
             'message' => $messages
@@ -188,11 +230,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("UPDATE Bookings SET cancel_token = ? WHERE bookingID = ?");
         $stmt->bind_param("si", $cancel_token, $booking_id);
         if (!$stmt->execute()) {
+            $conn->rollback();
             throw new Exception("Failed to update cancellation token: " . $stmt->errno);
         }
-
         $stmt->close();
+
+        // Delete the hold after successful booking
+        $delete_hold = $conn->prepare("
+            DELETE FROM BookingHolding 
+            WHERE holdDate = ? 
+            AND holdTimeslot = ? 
+            AND Rooms_roomID = ? 
+            AND Users_userID = ?
+        ");
+        $delete_hold->bind_param("ssii", $date, $time, $room_id, $user_id);
+        if (!$delete_hold->execute()) {
+            error_log("Warning: Failed to delete hold after booking: " . $delete_hold->error);
+        }
+        $delete_hold->close();
+
+        // Commit the transaction
+        $conn->commit();
         $conn->close();
+
+        error_log("Booking successful: booking_id=$booking_id, ref=$ref, user=$user_id, date=$date, time=$time");
 
         unset($_SESSION['stripe_payment_intent_id']);
 
