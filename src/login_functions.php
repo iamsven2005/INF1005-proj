@@ -14,12 +14,19 @@ function sanitize_input($data)
 function getDBconnection()
 {
     list($db_host, $db_user, $db_pass, $db_name) = getDBEnvVar();
-    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    
+    if (!$db_user || !$db_pass || !$db_name) {
+        die("Database configuration error: Environment variables not set.");
     }
-    return $conn;
+    
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    
+    try {
+        $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+        return $conn;
+    } catch (Exception $e) {
+        die("Connection failed: " . $e->getMessage());
+    }
 }
 
 
@@ -287,19 +294,24 @@ function authenticateUser($email, $password) {
         return false;
     }
 
-    //mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
     try {
         $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+        if ($conn->connect_error) {
+            return false;
+        }
 
         // Added is_admin to the SELECT statement
         $stmt = $conn->prepare("SELECT userID, username, email, passwordhash, is_admin FROM Users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
-		
+
         if ($result->num_rows !== 1) {
-			$user['message'] = "db";
+            $stmt->close();
+            $conn->close();
             return false; // user not found
         }
 
@@ -307,21 +319,18 @@ function authenticateUser($email, $password) {
 
         $stmt->close();
         $conn->close();
-		
+
         if (password_verify($password, $user['passwordhash'])) {
-			// Remove password hash before returning for security
-			unset($user['passwordhash']);
-		
-        //if ($password === $user['passwordhash']) {
-			return $user; // success, return user data
-        }
-		else {
+            // Remove password hash before returning for security
+            unset($user['passwordhash']);
+            return $user; // success, return user data
+        } else {
             return false; // password mismatch
         }
-    }
-	catch (Exception $e) {
-        // can log $e->getMessage() here
-        return false; //$e->getMessage();
+    } catch (Exception $e) {
+        // Log error for debugging (consider using error_log in production)
+        // error_log("Login error: " . $e->getMessage());
+        return false;
     }
 }
 
@@ -329,10 +338,18 @@ function authenticateUser($email, $password) {
 function getUserEmail(int $user_id) {
     list($db_host, $db_user, $db_pass, $db_name) = getDBEnvVar();
 
+    if (!$db_user || !$db_pass || !$db_name) {
+        return null;
+    }
+
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
     try {
         $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+        if ($conn->connect_error) {
+            return null;
+        }
 
         $stmt = $conn->prepare("SELECT email FROM Users WHERE userID = ?");
         $stmt->bind_param("i", $user_id);
@@ -348,9 +365,10 @@ function getUserEmail(int $user_id) {
         $conn->close();
 
         return $email;
-    }
-	catch (Exception $e) {
-        echo 'login: ' . $e->getMessage();
+    } catch (Exception $e) {
+        // Log error instead of echoing
+        // error_log('getUserEmail error: ' . $e->getMessage());
+        return null;
     }
 }
 
