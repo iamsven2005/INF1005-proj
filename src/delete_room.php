@@ -18,7 +18,18 @@ $rooms = [];
 // sorting logic (default: newest first)
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
 
-$sql = "SELECT roomID, roomName, roomDifficulty, imagePath FROM Rooms";
+$sql = "SELECT 
+            r.roomID, 
+            r.roomName, 
+            r.roomDifficulty, 
+            COALESCE(
+                (SELECT imagePath FROM RoomImages 
+                 WHERE Rooms_roomID = r.roomID AND is_featured = 1 LIMIT 1),
+                (SELECT imagePath FROM RoomImages 
+                 WHERE Rooms_roomID = r.roomID LIMIT 1),
+                r.imagePath
+            ) as imagePath 
+        FROM Rooms r";
 
 // appended when the option is selected
 switch ($sort) {

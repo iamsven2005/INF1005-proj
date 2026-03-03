@@ -9,7 +9,22 @@ $conn = getDbConnection();
 $rooms = [];
 $roomCount = 0;
 
-$sql = "SELECT roomID, roomName, roomFearLevel, roomDifficulty, roomExperienceType, roomGenre, imagePath FROM Rooms";
+$sql = "SELECT 
+            r.roomID, 
+            r.roomName, 
+            r.roomFearLevel, 
+            r.roomDifficulty, 
+            r.roomExperienceType, 
+            r.roomGenre, 
+            COALESCE(
+                (SELECT imagePath FROM RoomImages 
+                 WHERE Rooms_roomID = r.roomID AND is_featured = 1 LIMIT 1),
+                (SELECT imagePath FROM RoomImages 
+                 WHERE Rooms_roomID = r.roomID LIMIT 1),
+                r.imagePath
+            ) as imagePath
+        FROM Rooms r
+        ORDER BY r.roomID";
 $result = $conn->query($sql);
 
 //check for results

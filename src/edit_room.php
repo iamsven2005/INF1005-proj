@@ -13,6 +13,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['
 
 // get room details
 $room = null;
+$roomImages = [];
 if (isset($_GET['name'])) {
     $conn = getDBconnection();
 
@@ -26,6 +27,15 @@ if (isset($_GET['name'])) {
 
     if ($result->num_rows > 0) {
         $room = $result->fetch_assoc();
+        $roomID = $room['roomID'];
+        
+        // Fetch all images for this room
+        $imgStmt = $conn->prepare("SELECT imageID, imagePath, is_featured FROM RoomImages WHERE Rooms_roomID = ? ORDER BY is_featured DESC, created_at ASC");
+        $imgStmt->bind_param("i", $roomID);
+        $imgStmt->execute();
+        $imgResult = $imgStmt->get_result();
+        $roomImages = $imgResult->fetch_all(MYSQLI_ASSOC);
+        $imgStmt->close();
     }
     $conn->close();
 }
@@ -172,15 +182,39 @@ if (!$room) {
                                 </div>
                             </div>
 
-                            <!-- image update -->
+                            <!-- image management -->
                             <div class="mb-4">
-                                <label class="form-label text-light">Update Image (Leave blank to keep current)</label>
-                                <div class="mb-2">
-                                    <img src="<?php echo htmlspecialchars($room['imagePath']); ?>" alt="Current Image" style="height: 100px; border-radius: 4px; border: 1px solid #555;">
-                                    <small class="text-muted d-block mt-1">Current: <?php echo basename($room['imagePath']); ?></small>
-                                </div>
-                                <input class="form-control" type="file" name="roomImage" accept=".jpg, .png">
-                                <div class="form-text text-light">Accepted formats: JPG, PNG. Max size: 5MB.</div>
+                                <h5 class="text-light mb-3">Room Images</h5>
+                                
+                                <!-- existing images -->
+                                <?php if (!empty($roomImages)): ?>
+                                    <div class="mb-3">
+                                        <label class="text-light d-block mb-2">Current Images:</label>
+                                        <div class="row">
+                                            <?php foreach ($roomImages as $img): ?>
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="position-relative" style="border: 1px solid #555; border-radius: 4px; overflow: hidden;">
+                                                        <img src="<?php echo htmlspecialchars($img['imagePath']); ?>" alt="Room Image" style="width: 100%; height: 80px; object-fit: cover;">
+                                                        <?php if ($img['is_featured']): ?>
+                                                            <span class="badge bg-warning position-absolute top-0 start-0 m-1">Featured</span>
+                                                        <?php endif; ?>
+                                                        <button type="button" class="btn btn-sm btn-danger position-absolute bottom-0 end-0 m-1" onclick="deleteImage(<?php echo $img['imageID']; ?>, this)" data-image-id="<?php echo $img['imageID']; ?>">
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-info text-light mb-3">No images uploaded yet. Add images below.</div>
+                                <?php endif; ?>
+
+                                <!-- add new images -->
+                                <label for="roomImages" class="form-label text-light d-block">Add More Images (Optional)</label>
+                                <input class="form-control" type="file" id="roomImages" name="roomImages[]" accept=".jpg, .png" multiple>
+                                <div class="form-text text-light">Accepted formats: JPG, PNG. Max size: 5MB per image.</div>
+                                <small class="text-muted d-block mt-2">Tip: Select multiple files by holding Ctrl (Cmd on Mac) and clicking files</small>
                             </div>
 
                             <div class="d-grid gap-2">
@@ -194,6 +228,36 @@ if (!$room) {
         </div>
     </main>
     <?php include "inc/footer.inc.php" ?>
+
+    <script>
+        function deleteImage(imageID, button) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                fetch('api/delete_room_image.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        imageID: imageID
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the image element from the DOM
+                        button.closest('.col-md-3').remove();
+                        alert('Image deleted successfully');
+                    } else {
+                        alert('Error deleting image: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting image');
+                });
+            }
+        }
+    </script>
 </body>
 
 </html>

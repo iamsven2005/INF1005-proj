@@ -19,18 +19,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['roomID'])) {
     $conn = getDbConnection();
     $roomID = (int)$_POST['roomID'];
 
-    // get image path before deleting the room (so we can delete the image too)
-    $sqlGetImage = "SELECT imagePath FROM Rooms WHERE roomID = ?";
-    $stmtGet = $conn->prepare($sqlGetImage);
+    // get all image paths before deleting the room (so we can delete the images too)
+    $sqlGetImages = "SELECT imagePath FROM RoomImages WHERE Rooms_roomID = ?";
+    $stmtGet = $conn->prepare($sqlGetImages);
     $stmtGet->bind_param("i", $roomID);
     $stmtGet->execute();
     $result = $stmtGet->get_result();
 
-    $imageToDelete = null;
-    if ($row = $result->fetch_assoc()) {
-        $imageToDelete = $row['imagePath'];
+    $imagesToDelete = [];
+    while ($row = $result->fetch_assoc()) {
+        if ($row['imagePath'] && $row['imagePath'] !== 'images/placeholder.png' && file_exists($row['imagePath'])) {
+            $imagesToDelete[] = $row['imagePath'];
+        }
     }
     $stmtGet->close();
+    
+    // Also check the old imagePath column for backward compatibility
+    $sqlGetOldImage = "SELECT imagePath FROM Rooms WHERE roomID = ?";
+    $stmtOldGet = $conn->prepare($sqlGetOldImage);
+    $stmtOldGet->bind_param("i", $roomID);
+    $stmtOldGet->execute();
+    $oldResult = $stmtOldGet->get_result();
+    if ($oldRow = $oldResult->fetch_assoc()) {
+        $oldImagePath = $oldRow['imagePath'];
+        if ($oldImagePath && $oldImagePath !== 'images/placeholder.png' && file_exists($oldImagePath) && !in_array($oldImagePath, $imagesToDelete)) {
+            $imagesToDelete[] = $oldImagePath;
+        }
+    }
+    $stmtOldGet->close();
 
 
     // actual deletion (delete on cascade)
@@ -40,9 +56,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['roomID'])) {
 
     if ($stmtDelete->execute()) {
 
-        // deletes the image from earlier
-        if ($imageToDelete && $imageToDelete !== 'images/placeholder.png' && file_exists($imageToDelete)) {
-            unlink($imageToDelete);
+        // delete all images from disk
+        foreach ($imagesToDelete as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
         }
 
         // redirection

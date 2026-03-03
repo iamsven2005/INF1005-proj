@@ -64,43 +64,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $stmt->close();
 
-    // image handling (only runs when a file is uploaded)
-    if (isset($_FILES["roomImage"]) && $_FILES["roomImage"]["error"] == 0) {
+    // Handle multiple new image uploads
+    if (isset($_FILES["roomImages"]) && is_array($_FILES["roomImages"]["name"])) {
+        $target_dir = "images/";
+        $uploadedImages = [];
         
-        $allowed = ['jpg', 'png'];
-        $fileName = basename($_FILES["roomImage"]["name"]);
-        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $fileCount = count($_FILES["roomImages"]["name"]);
         
-        $check = getimagesize($_FILES["roomImage"]["tmp_name"]);
-        
-        if ($check !== false && in_array($extension, $allowed)) {
-            // find OLD image path so we can delete it later
-            $oldImgSql = "SELECT imagePath FROM Rooms WHERE roomID = ?";
-            $oldStmt = $conn->prepare($oldImgSql);
-            $oldStmt->bind_param("i", $id);
-            $oldStmt->execute();
-            $res = $oldStmt->get_result();
-            $oldPath = ($res->fetch_assoc())['imagePath'];
-            $oldStmt->close();
+        for ($i = 0; $i < $fileCount; $i++) {
+            if ($_FILES["roomImages"]["error"][$i] == 0) {
+                $fileName = basename($_FILES["roomImages"]["name"][$i]);
+                $newFileName = "room_" . time() . "_" . uniqid() . "_" . $fileName;
+                $target_file = $target_dir . $newFileName;
+                $uploadOk = 1;
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-            // upload new image
-            $target_dir = "images/";
-
-            $newFileName = "room_" . uniqid() . "." . $extension; 
-            $target_file = $target_dir . $newFileName;
-
-            if (move_uploaded_file($_FILES["roomImage"]["tmp_name"], $target_file)) {
-                
-                // update db with new image path
-                $updateImg = $conn->prepare("UPDATE Rooms SET imagePath=? WHERE roomID=?");
-                $updateImg->bind_param("si", $target_file, $id);
-                $updateImg->execute();
-                $updateImg->close();
-
-                // delete old image (only if exists and isnt placeholder)
-                if ($oldPath && $oldPath !== 'images/placeholder.png' && file_exists($oldPath)) {
-                    unlink($oldPath);
+                // check if image is an actual image
+                $check = getimagesize($_FILES["roomImages"]["tmp_name"][$i]);
+                if ($check === false) {
+                    continue;
                 }
+
+                // check file size (Limit to 5MB)
+                if ($_FILES["roomImages"]["size"][$i] > 5000000) {
+                    continue;
+                }
+
+                // allow certain file formats
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                    continue;
+                }
+
+                // Try to upload
+                if (move_uploaded_file($_FILES["roomImages"]["tmp_name"][$i], $target_file)) {
+                    $uploadedImages[] = $target_file;
+                }
+            }
+        }
+        
+        // Insert new images into RoomImages table
+        if (!empty($uploadedImages)) {
+            $imgSql = "INSERT INTO RoomImages (Rooms_roomID, imagePath, is_featured) VALUES (?, ?, ?)";
+            $imgStmt = $conn->prepare($imgSql);
+            
+            if ($imgStmt) {
+                foreach ($uploadedImages as $imgPath) {
+                    $isFeatured = 0; // New images are not featured by default
+                    $imgStmt->bind_param("isi", $id, $imgPath, $isFeatured);
+                    $imgStmt->execute();
+                }
+                $imgStmt->close();
             }
         }
     }

@@ -5,6 +5,7 @@ include "inc/functions.php";
 include "inc/review_functions.php";
 $conn = getDBconnection();
 $room = null;
+$roomImages = [];
 
 //check for 'NAME' in the url
 if (isset($_GET['name'])) {
@@ -30,6 +31,14 @@ if (isset($_GET['name'])) {
         $_SESSION['min'] = $room['roomMin'];
         $_SESSION['max'] = $room['roomMax'];
         $_SESSION['price'] = $room['roomPriceOffPeak'];
+
+        // Fetch all images for this room
+        $imgStmt = $conn->prepare("SELECT imageID, imagePath, is_featured FROM RoomImages WHERE Rooms_roomID = ? ORDER BY is_featured DESC, created_at ASC");
+        $imgStmt->bind_param("i", $room_id);
+        $imgStmt->execute();
+        $imgResult = $imgStmt->get_result();
+        $roomImages = $imgResult->fetch_all(MYSQLI_ASSOC);
+        $imgStmt->close();
 
         // Get average rating for this room
         $rating_stmt = $conn->prepare("SELECT AVG(rating) as avg_rating, COUNT(*) as review_count FROM Reviews WHERE Rooms_roomID = ?");
@@ -67,11 +76,29 @@ if (isset($_GET['name'])) {
             <a href="index.php" class="back-link">← Back to Home</a>
 
             <?php if ($room): ?>
-                <img src="<?php echo htmlspecialchars(str_replace(' ', '%20', $room['imagePath'] ?? '/images/placeholder.png')); ?>"
-                    alt="<?php echo htmlspecialchars($room['roomName']) ?>" class="room-hero">
+                <?php 
+                // Get primary image (first image or featured image)
+                $primaryImage = !empty($roomImages) 
+                    ? htmlspecialchars(str_replace(' ', '%20', $roomImages[0]['imagePath'])) 
+                    : htmlspecialchars(str_replace(' ', '%20', $room['imagePath'] ?? '/images/placeholder.png'));
+                ?>
+                <img src="<?php echo $primaryImage; ?>"
+                    alt="<?php echo htmlspecialchars($room['roomName']) ?>" class="room-hero" id="heroImage">
 
                 <div class="thumbnail-gallery">
-                    <img src="<?php echo htmlspecialchars(str_replace(' ', '%20', $room['imagePath'] ?? '/images/placeholder.png')); ?>" alt="Thumbnail 1" class="active" onclick="changeHeroImage(this.src)">
+                    <?php if (!empty($roomImages)): ?>
+                        <?php foreach ($roomImages as $index => $img): ?>
+                            <img src="<?php echo htmlspecialchars(str_replace(' ', '%20', $img['imagePath'])); ?>" 
+                                alt="Room Image <?php echo $index + 1; ?>" 
+                                class="<?php echo $index === 0 ? 'active' : ''; ?>" 
+                                onclick="changeHeroImage(this.src)">
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <img src="<?php echo htmlspecialchars(str_replace(' ', '%20', $room['imagePath'] ?? '/images/placeholder.png')); ?>" 
+                            alt="Room Image" 
+                            class="active" 
+                            onclick="changeHeroImage(this.src)">
+                    <?php endif; ?>
                 </div>
 
                 <div class="room-content">
@@ -214,6 +241,24 @@ if (isset($_GET['name'])) {
     <?php
     include "inc/footer.inc.php";
     ?>
+
+    <script>
+        function changeHeroImage(src) {
+            const heroImage = document.getElementById('heroImage');
+            if (heroImage) {
+                heroImage.src = src;
+            }
+            
+            // Update active thumbnail
+            const thumbnails = document.querySelectorAll('.thumbnail-gallery img');
+            thumbnails.forEach(thumb => {
+                thumb.classList.remove('active');
+                if (thumb.src === src) {
+                    thumb.classList.add('active');
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

@@ -131,12 +131,13 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['
                                 </div>
                             </div>
 
-                            <!-- image upload -->
+                            <!-- multiple images upload -->
                             <div class="mb-4">
-                                <label for="roomImage" class="form-label text-light">Room Image (Optional)</label>
-                                <!-- restrict to PNG and JPG only -->
-                                <input class="form-control" type="file" id="roomImage" name="roomImage" accept=".jpg, .png">
-                                <div class="form-text text-light">Accepted formats: JPG, PNG. Max size: 5MB.</div>
+                                <label for="roomImages" class="form-label text-light">Room Images (Optional)</label>
+                                <!-- allow multiple files -->
+                                <input class="form-control" type="file" id="roomImages" name="roomImages[]" accept=".jpg, .png" multiple>
+                                <div class="form-text text-light">Accepted formats: JPG, PNG. Max size: 5MB per image. You can upload multiple images at once.</div>
+                                <small class="text-muted d-block mt-2">Tip: Select multiple files by holding Ctrl (Cmd on Mac) and clicking files</small>
                             </div>
 
                             <div class="d-grid gap-2">
