@@ -4,6 +4,11 @@ services:
   web:
     build: .
     container_name: php_web_app
+    command: >
+      sh -c "if [ ! -f /var/www/html/vendor/autoload.php ]; then
+      composer install --working-dir=/var/www/html --no-interaction --optimize-autoloader;
+      fi;
+      apache2-foreground"
     ports:
       - "3001:80"
     volumes:
