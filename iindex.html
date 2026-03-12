@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bottle Flower Product Carousel</title>
   <style>
     * {
@@ -257,6 +257,302 @@
       transform: scale(0.9);
     }
 
+    .tulip-flower {
+      position: absolute;
+      left: 50%;
+      bottom: 40px;
+      transform: translateX(-50%);
+      width: 108px;
+      height: 98px;
+      z-index: 4;
+      display: none;
+    }
+
+    .tulip-petal {
+      position: absolute;
+      bottom: 0;
+      background: linear-gradient(to bottom, #ffb0c8, #f45084);
+      border-radius: 60% 60% 18% 18%;
+      box-shadow: inset -6px -9px 0 rgba(0,0,0,0.06);
+    }
+
+    .tulip-petal.left {
+      left: 8px;
+      width: 42px;
+      height: 68px;
+      transform: rotate(-22deg);
+    }
+
+    .tulip-petal.center {
+      left: 31px;
+      width: 42px;
+      height: 82px;
+      z-index: 2;
+      border-radius: 55% 55% 16% 16%;
+      background: linear-gradient(to bottom, #ffc1d5, #ff5b8f);
+    }
+
+    .tulip-petal.right {
+      right: 8px;
+      width: 42px;
+      height: 68px;
+      transform: rotate(22deg);
+    }
+
+    .tulip-petal.back-left,
+    .tulip-petal.back-right {
+      width: 34px;
+      height: 54px;
+      bottom: 16px;
+      background: linear-gradient(to bottom, #ff9fbe, #e93d74);
+      z-index: 0;
+    }
+
+    .tulip-petal.back-left {
+      left: 14px;
+      transform: rotate(-34deg);
+    }
+
+    .tulip-petal.back-right {
+      right: 14px;
+      transform: rotate(34deg);
+    }
+
+    .bottle.flower-type-tulip .flower {
+      display: none;
+    }
+
+    .bottle.flower-type-tulip .tulip-flower {
+      display: block;
+    }
+
+    .rose-bloom {
+      position: absolute;
+      left: 50%;
+      bottom: 36px;
+      width: 112px;
+      height: 106px;
+      transform: translateX(-50%);
+      z-index: 4;
+      display: none;
+    }
+
+    .rose-petal {
+      position: absolute;
+      background: linear-gradient(to bottom, #ff7a95, #d91b4e);
+      box-shadow: inset -4px -7px 0 rgba(0,0,0,0.08);
+    }
+
+    .rose-petal.outer-left {
+      left: 10px;
+      bottom: 12px;
+      width: 46px;
+      height: 62px;
+      border-radius: 70% 30% 60% 40% / 60% 45% 55% 40%;
+      transform: rotate(-28deg);
+    }
+
+    .rose-petal.outer-right {
+      right: 10px;
+      bottom: 12px;
+      width: 46px;
+      height: 62px;
+      border-radius: 30% 70% 40% 60% / 45% 60% 40% 55%;
+      transform: rotate(28deg);
+    }
+
+    .rose-petal.mid-left {
+      left: 20px;
+      bottom: 24px;
+      width: 40px;
+      height: 54px;
+      border-radius: 60% 40% 58% 42% / 55% 48% 52% 45%;
+      transform: rotate(-14deg);
+      background: linear-gradient(to bottom, #ff8aa2, #e42659);
+      z-index: 2;
+    }
+
+    .rose-petal.mid-right {
+      right: 20px;
+      bottom: 24px;
+      width: 40px;
+      height: 54px;
+      border-radius: 40% 60% 42% 58% / 48% 55% 45% 52%;
+      transform: rotate(14deg);
+      background: linear-gradient(to bottom, #ff8aa2, #e42659);
+      z-index: 2;
+    }
+
+    .rose-petal.center {
+      left: 50%;
+      bottom: 30px;
+      width: 42px;
+      height: 58px;
+      transform: translateX(-50%);
+      border-radius: 42% 42% 48% 48% / 28% 28% 60% 60%;
+      background: linear-gradient(to bottom, #ffb0c0, #f83d72);
+      z-index: 4;
+    }
+
+    .rose-petal.inner {
+      left: 50%;
+      bottom: 48px;
+      width: 18px;
+      height: 28px;
+      transform: translateX(-50%);
+      border-radius: 45% 55% 50% 50% / 35% 35% 65% 65%;
+      background: linear-gradient(to bottom, #ffd1db, #ff5f88);
+      z-index: 5;
+    }
+
+    .rose-petal.back-left,
+    .rose-petal.back-right {
+      width: 32px;
+      height: 48px;
+      bottom: 30px;
+      background: linear-gradient(to bottom, #f86a8c, #c91444);
+      z-index: 1;
+    }
+
+    .rose-petal.back-left {
+      left: 16px;
+      border-radius: 60% 35% 50% 45%;
+      transform: rotate(-20deg);
+    }
+
+    .rose-petal.back-right {
+      right: 16px;
+      border-radius: 35% 60% 45% 50%;
+      transform: rotate(20deg);
+    }
+
+    .rose-sepal {
+      position: absolute;
+      left: 50%;
+      bottom: 26px;
+      width: 50px;
+      height: 14px;
+      transform: translateX(-50%);
+      background: #2f8b44;
+      clip-path: polygon(0 100%, 12% 35%, 30% 100%, 50% 10%, 70% 100%, 88% 35%, 100% 100%);
+      z-index: 2;
+    }
+
+    .bottle.flower-type-rose .flower {
+      display: none;
+    }
+
+    .bottle.flower-type-rose .rose-bloom {
+      display: block;
+    }
+
+    .orchid-flower {
+      position: absolute;
+      left: 50%;
+      bottom: 38px;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      z-index: 4;
+      display: none;
+    }
+
+    .orchid-sepal,
+    .orchid-petal,
+    .orchid-lip,
+    .orchid-core {
+      position: absolute;
+      background: radial-gradient(circle at 35% 30%, #fff7ff 0%, #f7d9ff 22%, #e49af2 58%, #b85dd1 100%);
+      box-shadow: inset -6px -8px 0 rgba(0,0,0,0.05);
+    }
+
+    .orchid-sepal.top {
+      left: 28px;
+      top: 0;
+      width: 44px;
+      height: 64px;
+      border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%;
+      transform: scale(0.75);
+    }
+
+    .orchid-sepal.left {
+      left: 8px;
+      top: 34px;
+      width: 50px;
+      height: 70px;
+      border-radius: 55% 45% 50% 50%;
+      transform: rotate(-32deg) scale(0.75);
+      transform-origin: center;
+    }
+
+    .orchid-sepal.right {
+      right: 8px;
+      top: 34px;
+      width: 50px;
+      height: 70px;
+      border-radius: 45% 55% 50% 50%;
+      transform: rotate(32deg) scale(0.75);
+      transform-origin: center;
+    }
+
+    .orchid-petal.left {
+      left: 4px;
+      top: 24px;
+      width: 64px;
+      height: 52px;
+      border-radius: 65% 35% 60% 40% / 55% 45% 55% 45%;
+      transform: rotate(-18deg) scale(0.75);
+      transform-origin: center;
+    }
+
+    .orchid-petal.right {
+      right: 4px;
+      top: 24px;
+      width: 64px;
+      height: 52px;
+      border-radius: 35% 65% 40% 60% / 45% 55% 45% 55%;
+      transform: rotate(18deg) scale(0.75);
+      transform-origin: center;
+    }
+
+    .orchid-lip {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      width: 52px;
+      height: 50px;
+      background: radial-gradient(circle at 50% 28%, #fff7b8 0%, #ffd76d 35%, #ff88a7 70%, #d7477a 100%);
+      border-radius: 40% 40% 55% 55% / 35% 35% 65% 65%;
+      z-index: 4;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.06);
+      transform: translateX(-50%) scale(0.75);
+      transform-origin: center;
+    }
+
+    .orchid-core {
+      position: absolute;
+      left: 50%;
+      top: 40px;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 28px;
+      background: radial-gradient(circle at 40% 35%, #fffde5 0%, #ffe475 50%, #e5ad25 100%);
+      border-radius: 50%;
+      z-index: 5;
+      box-shadow: none;
+      transform: translateX(-50%) scale(0.75);
+      transform-origin: center;
+    }
+
+    .bottle.flower-type-orchid .flower {
+      display: none;
+    }
+
+    .bottle.flower-type-orchid .orchid-flower {
+      display: block;
+    }
+
     .stem {
       position: absolute;
       left: 50%;
@@ -338,6 +634,22 @@
       z-index: 1;
     }
 
+    .flower-shape-transition {
+      animation: flowerShapeMorph 620ms cubic-bezier(0.22, 0.68, 0.5, 1);
+    }
+
+    @keyframes flowerShapeMorph {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.06);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
     .controls {
       position: absolute;
       inset: 0;
@@ -365,6 +677,47 @@
     .nav-btn:hover {
       transform: scale(1.06);
       background: #fff;
+    }
+
+    .flower-controls-main {
+      position: absolute;
+      left: 50%;
+      top: 12px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 22;
+      background: rgba(255,255,255,0.86);
+      border-radius: 999px;
+      padding: 6px 10px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.10);
+    }
+
+    .flower-nav-btn-main {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.98);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .flower-nav-btn-main:hover {
+      background: #fff;
+    }
+
+    .flower-current-name {
+      min-width: 110px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4a4a4a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .panel {
@@ -405,10 +758,7 @@
       color: #595959;
       line-height: 1.6;
       min-height: auto;
-      display: -webkit-box;
-      line-clamp: 3;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
+      max-height: calc(1em * 1.6 * 3);
       overflow: hidden;
       cursor: default;
     }
@@ -620,6 +970,38 @@
       right: 8px;
     }
 
+    .custom-flower-wrap {
+      margin-top: 10px;
+      display: none;
+    }
+
+    .custom-flower-wrap.visible {
+      display: block;
+    }
+
+    .custom-flower-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .custom-flower-input {
+      width: 100%;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+    }
+
+    .custom-flower-input:focus {
+      border-color: rgba(0,0,0,0.3);
+    }
+
     .meta-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -686,7 +1068,7 @@
       line-height: 1.6;
     }
 
-    .meta-card h4 {
+    .meta-card h3 {
       margin: 0 0 6px;
       font-size: 13px;
       color: #777;
@@ -822,15 +1204,20 @@
           <button class="nav-btn" id="leftBtn" aria-label="Previous bottle">&#8592;</button>
           <button class="nav-btn" id="rightBtn" aria-label="Next bottle">&#8594;</button>
         </div>
+        <div class="flower-controls-main">
+          <button class="flower-nav-btn-main" id="mainFlowerLeftBtn" aria-label="Previous flower on main carousel">&#8592;</button>
+          <span class="flower-current-name" id="mainFlowerName">Roses</span>
+          <button class="flower-nav-btn-main" id="mainFlowerRightBtn" aria-label="Next flower on main carousel">&#8594;</button>
+        </div>
       </div>
     </section>
 
     <aside class="panel">
-      <div class="tag">16 product combinations</div>
-      <h2 class="product-title" id="productTitle">Whisky × Rose</h2>
+      <div class="tag">16 + custom combinations</div>
+      <h2 class="product-title" id="productTitle">Whiskey × Roses</h2>
       <div class="product-price" id="productPrice">$68.00</div>
       <p class="product-description" id="productDescription">
-        A warm amber whisky bottle arranged with velvety roses for a rich, romantic gift presentation.
+        A warm amber Whiskey bottle arranged with velvety roses for a rich, romantic gift presentation.
       </p>
       <div class="description-read-more" id="descriptionReadMore">Click to read more</div>
 
@@ -847,21 +1234,32 @@
         <div class="flower-mini-stage" id="flowerMiniStage"></div>
       </div>
 
+      <div class="custom-flower-wrap" id="customFlowerWrap">
+        <label class="custom-flower-label" for="customFlowerInput">Type your flower choice</label>
+        <input
+          class="custom-flower-input"
+          id="customFlowerInput"
+          type="text"
+          placeholder="E.g. Sunflower with eucalyptus"
+          maxlength="80"
+        >
+      </div>
+
       <div class="meta-grid">
         <div class="meta-card">
-          <h4>Bottle</h4>
-          <p id="metaBottle">Whisky</p>
+          <h3>Bottle</h3>
+          <p id="metaBottle">Whiskey</p>
         </div>
         <div class="meta-card">
-          <h4>Flower</h4>
-          <p id="metaFlower">Rose</p>
+          <h3>Flower</h3>
+          <p id="metaFlower">Roses</p>
         </div>
         <div class="meta-card">
-          <h4>Style</h4>
+          <h3>Style</h3>
           <p id="metaStyle">Bold & Romantic</p>
         </div>
         <div class="meta-card">
-          <h4>SKU</h4>
+          <h3>SKU</h3>
           <p id="metaSku">WH-RO</p>
         </div>
       </div>
@@ -882,7 +1280,7 @@
     const bottles = [
       {
         id: "whisky",
-        name: "Whisky",
+        name: "Whiskey",
         liquid: "linear-gradient(180deg, #d9b05f, #9d5f1f)",
         accent: "#8b5a2b"
       },
@@ -908,18 +1306,11 @@
 
     const flowers = [
       {
-        id: "rose",
-        name: "Rose",
+        id: "roses",
+        name: "Roses",
         color: "#d85a7b",
         panel: "linear-gradient(180deg, #f9d3df, #ed9fb6)",
         note: "Romantic & classic"
-      },
-      {
-        id: "lily",
-        name: "Lily",
-        color: "#f1efe9",
-        panel: "linear-gradient(180deg, #ffffff, #ddd8ce)",
-        note: "Elegant & soft"
       },
       {
         id: "tulip",
@@ -929,133 +1320,147 @@
         note: "Bright & cheerful"
       },
       {
-        id: "orchid",
-        name: "Orchid",
+        id: "hydrangeas-baby-breath",
+        name: "Hydrangeas w Baby Breath",
+        color: "#8eb0e8",
+        panel: "linear-gradient(180deg, #d7e4ff, #adc5f1)",
+        note: "Soft & full"
+      },
+      {
+        id: "mixed-ochard",
+        name: "Mixed (contain ochard)",
         color: "#b777d8",
-        panel: "linear-gradient(180deg, #e8d1f4, #c28fe4)",
-        note: "Premium & graceful"
+        panel: "linear-gradient(180deg, #f2defb, #d8aef0)",
+        note: "Varied & premium"
+      },
+      {
+        id: "others",
+        name: "Others",
+        color: "#9ea3ad",
+        panel: "linear-gradient(180deg, #eef0f4, #cdd3de)",
+        note: "Custom flower request"
       }
     ];
 
     const products = {
       whisky: {
-        rose: {
-          title: "Whisky × Rose",
+        roses: {
+          title: "Whiskey × Roses",
           price: 68,
-          description: "A warm amber whisky bottle arranged with velvety roses for a rich, romantic gift presentation.",
+          description: "A warm amber Whiskey bottle arranged with velvety roses for a rich, romantic gift presentation.",
           style: "Bold & Romantic",
           sku: "WH-RO"
         },
-        lily: {
-          title: "Whisky × Lily",
-          price: 70,
-          description: "A whisky arrangement softened by lilies, creating a refined balance between boldness and elegance.",
-          style: "Warm & Elegant",
-          sku: "WH-LI"
-        },
         tulip: {
-          title: "Whisky × Tulip",
-          price: 66,
-          description: "A lively whisky gift set with tulip styling for a playful, modern floral finish.",
+          title: "Whiskey × Tulip",
+          price: 70,
+          description: "A warm Whiskey arrangement with tulips for a bright and playful presentation.",
           style: "Warm & Playful",
           sku: "WH-TU"
         },
-        orchid: {
-          title: "Whisky × Orchid",
+        "hydrangeas-baby-breath": {
+          title: "Whiskey × Hydrangeas w Baby Breath",
+          price: 72,
+          description: "A Whiskey arrangement with hydrangeas and baby breath for a soft, rounded, and elegant bouquet feel.",
+          style: "Warm & Elegant",
+          sku: "WH-HB"
+        },
+        "mixed-ochard": {
+          title: "Whiskey × Mixed (contain ochard)",
           price: 74,
-          description: "Our premium whisky presentation paired with orchids for a striking, upscale floral statement.",
+          description: "A premium Whiskey arrangement with a mixed floral selection that includes ochard accents.",
           style: "Rich & Premium",
-          sku: "WH-OR"
+          sku: "WH-MX"
         }
       },
       gin: {
-        rose: {
-          title: "Gin × Rose",
+        roses: {
+          title: "Gin × Roses",
           price: 64,
-          description: "A fresh botanical gin bottle finished with roses for a soft yet stylish contemporary gift.",
+          description: "A fresh botanical gin bottle finished with roses for a soft yet stylish gift.",
           style: "Fresh & Romantic",
           sku: "GI-RO"
         },
-        lily: {
-          title: "Gin × Lily",
-          price: 67,
-          description: "Crisp gin meets clean white lilies in a graceful arrangement with a calm, polished look.",
-          style: "Clean & Elegant",
-          sku: "GI-LI"
-        },
         tulip: {
           title: "Gin × Tulip",
-          price: 63,
+          price: 67,
           description: "A bright gin floral arrangement with tulips that feels cheerful, airy, and modern.",
           style: "Botanical & Cheerful",
           sku: "GI-TU"
         },
-        orchid: {
-          title: "Gin × Orchid",
+        "hydrangeas-baby-breath": {
+          title: "Gin × Hydrangeas w Baby Breath",
+          price: 69,
+          description: "Crisp gin paired with hydrangeas and baby breath in a clean and graceful arrangement.",
+          style: "Clean & Elegant",
+          sku: "GI-HB"
+        },
+        "mixed-ochard": {
+          title: "Gin × Mixed (contain ochard)",
           price: 71,
-          description: "A sophisticated gin gift styled with orchids for a premium botanical presentation.",
+          description: "A sophisticated gin gift with a mixed bouquet that includes ochard details.",
           style: "Fresh & Luxurious",
-          sku: "GI-OR"
+          sku: "GI-MX"
         }
       },
       vodka: {
-        rose: {
-          title: "Vodka × Rose",
+        roses: {
+          title: "Vodka × Roses",
           price: 62,
-          description: "A sleek vodka bottle paired with roses for a clean design softened by romantic floral detail.",
+          description: "A sleek vodka bottle paired with roses for a clean design softened by romantic detail.",
           style: "Modern & Romantic",
           sku: "VO-RO"
         },
-        lily: {
-          title: "Vodka × Lily",
-          price: 65,
-          description: "A minimalist vodka arrangement elevated by lilies for a graceful and understated finish.",
-          style: "Minimal & Elegant",
-          sku: "VO-LI"
-        },
         tulip: {
           title: "Vodka × Tulip",
-          price: 61,
-          description: "A bright, contemporary vodka flower pairing designed to feel youthful and energetic.",
+          price: 65,
+          description: "A bright contemporary vodka pairing with tulips designed to feel youthful and energetic.",
           style: "Crisp & Bright",
           sku: "VO-TU"
         },
-        orchid: {
-          title: "Vodka × Orchid",
+        "hydrangeas-baby-breath": {
+          title: "Vodka × Hydrangeas w Baby Breath",
+          price: 67,
+          description: "A minimalist vodka arrangement elevated by hydrangeas and baby breath for graceful softness.",
+          style: "Minimal & Elegant",
+          sku: "VO-HB"
+        },
+        "mixed-ochard": {
+          title: "Vodka × Mixed (contain ochard)",
           price: 69,
-          description: "Vodka and orchids come together in a premium composition with a sleek, luxurious mood.",
+          description: "Vodka with a mixed floral composition that includes ochard for a premium finish.",
           style: "Cool & Premium",
-          sku: "VO-OR"
+          sku: "VO-MX"
         }
       },
       wine: {
-        rose: {
-          title: "Wine × Rose",
+        roses: {
+          title: "Wine × Roses",
           price: 69,
-          description: "A classic wine floral pairing with roses for a timeless, gift-ready romantic arrangement.",
+          description: "A classic wine floral pairing with roses for a timeless romantic arrangement.",
           style: "Classic & Romantic",
           sku: "WI-RO"
         },
-        lily: {
-          title: "Wine × Lily",
-          price: 72,
-          description: "Elegant wine styling with lilies for a graceful, refined, and slightly ceremonial feel.",
-          style: "Classic & Elegant",
-          sku: "WI-LI"
-        },
         tulip: {
           title: "Wine × Tulip",
-          price: 67,
-          description: "A wine bottle lifted by bright tulips, creating a more cheerful and celebratory presentation.",
+          price: 72,
+          description: "A wine bottle lifted by bright tulips, creating a cheerful and celebratory presentation.",
           style: "Festive & Bright",
           sku: "WI-TU"
         },
-        orchid: {
-          title: "Wine × Orchid",
+        "hydrangeas-baby-breath": {
+          title: "Wine × Hydrangeas w Baby Breath",
+          price: 74,
+          description: "Elegant wine styling with hydrangeas and baby breath for a graceful, refined feel.",
+          style: "Classic & Elegant",
+          sku: "WI-HB"
+        },
+        "mixed-ochard": {
+          title: "Wine × Mixed (contain ochard)",
           price: 76,
-          description: "A premium wine arrangement paired with orchids for a rich, luxurious floral gift experience.",
+          description: "A premium wine arrangement with mixed florals that include ochard for a luxurious gift look.",
           style: "Luxury Statement",
-          sku: "WI-OR"
+          sku: "WI-MX"
         }
       }
     };
@@ -1068,11 +1473,16 @@
     const carouselStage = document.getElementById("carouselStage");
     const leftBtn = document.getElementById("leftBtn");
     const rightBtn = document.getElementById("rightBtn");
+    const mainFlowerLeftBtn = document.getElementById("mainFlowerLeftBtn");
+    const mainFlowerRightBtn = document.getElementById("mainFlowerRightBtn");
+    const mainFlowerName = document.getElementById("mainFlowerName");
 
     const flowerSelector = document.getElementById("flowerSelector");
     const flowerMiniStage = document.getElementById("flowerMiniStage");
     const flowerLeftBtn = document.getElementById("flowerLeftBtn");
     const flowerRightBtn = document.getElementById("flowerRightBtn");
+    const customFlowerWrap = document.getElementById("customFlowerWrap");
+    const customFlowerInput = document.getElementById("customFlowerInput");
 
     const productTitle = document.getElementById("productTitle");
     const productPrice = document.getElementById("productPrice");
@@ -1106,6 +1516,33 @@
             <div class="neck"></div>
             <div class="flower-cluster">
               <div class="flower-backdrop"></div>
+              <div class="rose-bloom">
+                <div class="rose-petal back-left"></div>
+                <div class="rose-petal back-right"></div>
+                <div class="rose-petal outer-left"></div>
+                <div class="rose-petal outer-right"></div>
+                <div class="rose-petal mid-left"></div>
+                <div class="rose-petal mid-right"></div>
+                <div class="rose-petal center"></div>
+                <div class="rose-petal inner"></div>
+                <div class="rose-sepal"></div>
+              </div>
+              <div class="tulip-flower">
+                <div class="tulip-petal back-left"></div>
+                <div class="tulip-petal back-right"></div>
+                <div class="tulip-petal left"></div>
+                <div class="tulip-petal center"></div>
+                <div class="tulip-petal right"></div>
+              </div>
+              <div class="orchid-flower">
+                <div class="orchid-sepal top"></div>
+                <div class="orchid-sepal left"></div>
+                <div class="orchid-sepal right"></div>
+                <div class="orchid-petal left"></div>
+                <div class="orchid-petal right"></div>
+                <div class="orchid-lip"></div>
+                <div class="orchid-core"></div>
+              </div>
               <div class="flower center"></div>
               <div class="flower left"></div>
               <div class="flower right"></div>
@@ -1179,6 +1616,9 @@
 
         el.querySelector(".liquid").style.background = bottle.liquid;
         el.querySelector(".label").style.borderBottom = `4px solid ${bottle.accent}`;
+        el.classList.toggle("flower-type-rose", activeFlower.id === "roses");
+        el.classList.toggle("flower-type-tulip", activeFlower.id === "tulip");
+        el.classList.toggle("flower-type-orchid", activeFlower.id === "mixed-ochard");
         el.querySelectorAll(".flower").forEach(f => {
           f.style.background = activeFlower.color;
         });
@@ -1211,6 +1651,28 @@
     function updateProductInfo() {
       const bottle = getCurrentBottle();
       const flower = getCurrentFlower();
+      const customFlowerText = customFlowerInput.value.trim();
+
+      if (flower.id === "others") {
+        const selectedFlowerName = customFlowerText || "Others";
+        mainFlowerName.textContent = selectedFlowerName;
+
+        customFlowerWrap.classList.add("visible");
+        productTitle.textContent = `${bottle.name} × ${selectedFlowerName}`;
+        productPrice.textContent = "TBC";
+        productDescription.textContent = `Custom ${bottle.name.toLowerCase()} floral request with ${selectedFlowerName.toLowerCase()}. Final arrangement details and pricing are to be confirmed.`;
+        metaBottle.textContent = bottle.name;
+        metaFlower.textContent = selectedFlowerName;
+        metaStyle.textContent = "Custom Request";
+        metaSku.textContent = "TBC";
+
+        descriptionModalText.textContent = productDescription.textContent;
+        updateDescriptionClampState();
+        return;
+      }
+
+      customFlowerWrap.classList.remove("visible");
+      mainFlowerName.textContent = flower.name;
       const product = products[bottle.id][flower.id];
 
       productTitle.textContent = product.title;
@@ -1269,11 +1731,37 @@
       }, 700);
     }
 
+    function getFlowerShapeType(flowerId) {
+      if (flowerId === "roses") return "rose";
+      if (flowerId === "tulip") return "tulip";
+      if (flowerId === "mixed-ochard") return "orchid";
+      return "generic";
+    }
+
+    function triggerFlowerShapeTransition() {
+      const bottleElements = document.querySelectorAll(".bottle");
+      bottleElements.forEach((el) => el.classList.remove("flower-shape-transition"));
+      
+      requestAnimationFrame(() => {
+        bottleElements.forEach((el) => el.classList.add("flower-shape-transition"));
+        setTimeout(() => {
+          bottleElements.forEach((el) => el.classList.remove("flower-shape-transition"));
+        }, 640);
+      });
+    }
+
     function moveFlower(direction) {
       if (isFlowerAnimating) return;
       isFlowerAnimating = true;
 
+      const previousShapeType = getFlowerShapeType(getCurrentFlower().id);
       currentFlowerIndex = (currentFlowerIndex + direction + flowers.length) % flowers.length;
+      const nextShapeType = getFlowerShapeType(getCurrentFlower().id);
+      
+      if (previousShapeType !== nextShapeType) {
+        triggerFlowerShapeTransition();
+      }
+
       applyMiniFlowerStyles();
       applyBottleStyles();
       updateProductInfo();
@@ -1356,6 +1844,8 @@
 
     flowerLeftBtn.addEventListener("click", () => moveFlower(-1));
     flowerRightBtn.addEventListener("click", () => moveFlower(1));
+    mainFlowerLeftBtn.addEventListener("click", () => moveFlower(-1));
+    mainFlowerRightBtn.addEventListener("click", () => moveFlower(1));
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "ArrowLeft") moveBottle(-1);
@@ -1376,6 +1866,11 @@
     addSwipe(flowerSelector, () => moveFlower(1), () => moveFlower(-1));
 
     window.addEventListener("resize", updateReadMoreLabel);
+    customFlowerInput.addEventListener("input", () => {
+      if (getCurrentFlower().id === "others") {
+        updateProductInfo();
+      }
+    });
 
     renderBottleElements();
     renderMiniFlowerCards();
