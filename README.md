@@ -1,6 +1,5 @@
 # inf1005-project
 
-# For desolatedstorm
 after db creation & test data is created and tested, export the db file
 1. Go to `Server -> Data Export`
 2. Select the correct schema
