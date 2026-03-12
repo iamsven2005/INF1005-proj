@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bottle Flower Product Carousel</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #f7f4ef 0%, #efe7da 100%);
+      color: #2d2d2d;
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
+
+    .page {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      padding: 18px;
+      max-width: 1300px;
+      margin: 0 auto;
+      align-items: center;
+    }
+
+    .viewer {
+      position: relative;
+      min-height: 560px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      padding: 24px;
+    }
+
+    .viewer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .viewer-header h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .hint {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .carousel-stage {
+      position: relative;
+      height: 460px;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at center bottom, rgba(0,0,0,0.12), transparent 42%),
+        linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0.18));
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    .bottle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 190px;
+      height: 420px;
+      transform-origin: center center;
+      transition:
+        transform 650ms cubic-bezier(.22,.8,.25,1),
+        opacity 650ms cubic-bezier(.22,.8,.25,1),
+        filter 650ms cubic-bezier(.22,.8,.25,1);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .bottle-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .glass {
+      position: relative;
+      width: 120px;
+      height: 320px;
+      border-radius: 30px 30px 24px 24px;
+      border: 3px solid rgba(255,255,255,0.55);
+      box-shadow:
+        inset 0 0 18px rgba(255,255,255,0.28),
+        0 18px 30px rgba(0,0,0,0.18);
+      overflow: visible;
+      backdrop-filter: blur(4px);
+    }
+
+    .glass-shell {
+      position: absolute;
+      inset: 0;
+      border-radius: 30px 30px 24px 24px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .neck {
+      position: absolute;
+      top: -74px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 46px;
+      height: 84px;
+      border-radius: 16px 16px 12px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0.2));
+      border: 3px solid rgba(255,255,255,0.55);
+      box-shadow:
+        inset 0 0 12px rgba(255,255,255,0.18),
+        0 8px 20px rgba(0,0,0,0.14);
+    }
+
+    .cap {
+      position: absolute;
+      top: -92px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 52px;
+      height: 20px;
+      border-radius: 8px;
+      background: #cab58f;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.16);
+    }
+
+    .liquid {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 72%;
+      opacity: 0.88;
+    }
+
+    .label {
+      position: absolute;
+      left: 50%;
+      top: 120px;
+      transform: translateX(-50%);
+      width: 82px;
+      min-height: 72px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.86);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 8px;
+      text-align: center;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.08);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      z-index: 5;
+    }
+
+    .label small {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: #777;
+      margin-top: 4px;
+    }
+
+    .flower-cluster {
+      position: absolute;
+      left: 50%;
+      top: -6px;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 150px;
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    .flower-backdrop {
+      position: absolute;
+      left: 50%;
+      top: 62px;
+      transform: translateX(-50%);
+      width: 116px;
+      height: 72px;
+      border-radius: 22px;
+      opacity: 0.26;
+      filter: blur(1px);
+      z-index: 1;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    }
+
+    .flower {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      box-shadow:
+        inset 0 0 10px rgba(255,255,255,0.4),
+        0 6px 12px rgba(0,0,0,0.12);
+      z-index: 3;
+    }
+
+    .flower::before,
+    .flower::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      left: 0;
+      top: 0;
+      background: inherit;
+    }
+
+    .flower::before {
+      transform: translate(-14px, 8px) scale(0.9);
+    }
+
+    .flower::after {
+      transform: translate(14px, 8px) scale(0.9);
+    }
+
+    .flower.center {
+      left: 50px;
+      top: 6px;
+    }
+
+    .flower.left {
+      left: 22px;
+      top: 30px;
+      transform: scale(0.9);
+    }
+
+    .flower.right {
+      left: 78px;
+      top: 30px;
+      transform: scale(0.9);
+    }
+
+    .stem {
+      position: absolute;
+      left: 50%;
+      top: 60px;
+      width: 4px;
+      height: 76px;
+      background: linear-gradient(180deg, #2c8b58, #1d5d3b);
+      transform: translateX(-50%);
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      z-index: 2;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 24px;
+      height: 14px;
+      background: linear-gradient(180deg, #55b777, #2a7d50);
+      border-radius: 24px 0 24px 0;
+      z-index: 2;
+    }
+
+    .leaf.left {
+      left: 40px;
+      top: 110px;
+      transform: rotate(-28deg);
+    }
+
+    .leaf.right {
+      right: 40px;
+      top: 124px;
+      transform: scaleX(-1) rotate(-28deg);
+    }
+
+    .shadow-base {
+      position: absolute;
+      bottom: 34px;
+      left: 50%;
+      width: 170px;
+      height: 24px;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(0,0,0,0.24), rgba(0,0,0,0.02) 72%);
+      filter: blur(6px);
+      z-index: 0;
+    }
+
+    .state-center {
+      transform: translate(-50%, -50%) translateX(0) rotate(0deg) scale(1);
+      opacity: 1;
+      filter: blur(0);
+      z-index: 4;
+    }
+
+    .state-left {
+      transform: translate(-50%, -50%) translateX(-330px) rotate(-26deg) scale(0.82);
+      opacity: 0.6;
+      filter: blur(1px);
+      z-index: 2;
+    }
+
+    .state-right {
+      transform: translate(-50%, -50%) translateX(330px) rotate(26deg) scale(0.82);
+      opacity: 0.6;
+      filter: blur(1px);
+      z-index: 2;
+    }
+
+    .state-hidden-left {
+      transform: translate(-50%, -50%) translateX(-620px) rotate(-40deg) scale(0.65);
+      opacity: 0;
+      filter: blur(4px);
+      z-index: 1;
+    }
+
+    .state-hidden-right {
+      transform: translate(-50%, -50%) translateX(620px) rotate(40deg) scale(0.65);
+      opacity: 0;
+      filter: blur(4px);
+      z-index: 1;
+    }
+
+    .controls {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .nav-btn {
+      pointer-events: auto;
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.84);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      cursor: pointer;
+      font-size: 22px;
+      transition: transform 150ms ease, background 150ms ease;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.06);
+      background: #fff;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.72);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      max-height: calc(100dvh - 36px);
+      overflow-y: auto;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #f0e6d9;
+      color: #6a4e2d;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .product-title {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.1;
+    }
+
+    .product-price {
+      font-size: 27px;
+      font-weight: 800;
+      margin: 10px 0 6px;
+    }
+
+    .product-description {
+      margin: 0 0 16px;
+      color: #595959;
+      line-height: 1.6;
+      min-height: auto;
+      display: -webkit-box;
+      line-clamp: 3;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .product-description.is-truncated {
+      cursor: pointer;
+    }
+
+    .product-description.is-truncated:hover {
+      color: #3d3d3d;
+    }
+
+    .description-read-more {
+      margin: -8px 0 14px;
+      font-size: 12px;
+      color: #7a7a7a;
+      display: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .description-read-more.visible {
+      display: inline-block;
+    }
+
+    .section-title {
+      margin: 22px 0 12px;
+      font-size: 15px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .flower-selector {
+      position: relative;
+      background: rgba(255,255,255,0.92);
+      border-radius: 22px;
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 18px 52px;
+      overflow: hidden;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    .flower-selector-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .flower-selector-label {
+      font-size: 12px;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .flower-selector-hint {
+      font-size: 12px;
+      color: #8a8a8a;
+    }
+
+    .flower-mini-stage {
+      position: relative;
+      height: 120px;
+      overflow: hidden;
+    }
+
+  .mini-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 130px;
+    height: 92px;
+    border-radius: 20px;
+    transform-origin: center center;
+    transition:
+      transform 500ms cubic-bezier(.22,.8,.25,1),
+      opacity 500ms cubic-bezier(.22,.8,.25,1),
+      filter 500ms cubic-bezier(.22,.8,.25,1);
+    box-shadow: 0 16px 28px rgba(0,0,0,0.10);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.7);
+  }
+
+  .mini-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.14);
+    overflow: hidden;
+  }
+
+  .mini-card-word {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(60, 40, 30, 0.18);
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .mini-flower-shape {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow:
+      inset 0 0 8px rgba(255,255,255,0.45),
+      0 4px 10px rgba(0,0,0,0.12);
+    z-index: 2;
+  }
+
+  .mini-flower-shape::before,
+  .mini-flower-shape::after {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: inherit;
+    top: 0;
+    left: 0;
+  }
+
+  .mini-flower-shape::before {
+    transform: translate(-11px, 7px) scale(0.88);
+  }
+
+  .mini-flower-shape::after {
+    transform: translate(11px, 7px) scale(0.88);
+  }
+
+  .mini-card-note {
+    display: none;
+  }
+
+  .mini-card-name {
+    display: none;
+  }
+
+    .mini-state-center {
+      transform: translate(-50%, -50%) translateX(0) scale(1);
+      opacity: 1;
+      filter: blur(0);
+      z-index: 4;
+    }
+
+    .mini-state-left {
+      transform: translate(-50%, -50%) translateX(-108px) scale(0.82) rotate(-8deg);
+      opacity: 0.68;
+      filter: blur(0.5px);
+      z-index: 2;
+    }
+
+    .mini-state-right {
+      transform: translate(-50%, -50%) translateX(108px) scale(0.82) rotate(8deg);
+      opacity: 0.68;
+      filter: blur(0.5px);
+      z-index: 2;
+    }
+
+    .mini-state-hidden-left {
+      transform: translate(-50%, -50%) translateX(-220px) scale(0.62) rotate(-14deg);
+      opacity: 0;
+      filter: blur(3px);
+      z-index: 1;
+    }
+
+    .mini-state-hidden-right {
+      transform: translate(-50%, -50%) translateX(220px) scale(0.62) rotate(14deg);
+      opacity: 0;
+      filter: blur(3px);
+      z-index: 1;
+    }
+
+    .mini-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.10);
+      cursor: pointer;
+      z-index: 10;
+      font-size: 18px;
+    }
+
+    .mini-nav.left {
+      left: 8px;
+    }
+
+    .mini-nav.right {
+      right: 8px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .meta-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .description-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .description-modal.open {
+      display: flex;
+    }
+
+    .description-modal-card {
+      width: min(560px, 100%);
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .description-modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+
+    .description-modal-title {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .description-modal-close {
+      border: none;
+      background: #f1f1f1;
+      border-radius: 10px;
+      width: 34px;
+      height: 34px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .description-modal-text {
+      margin: 0;
+      color: #595959;
+      line-height: 1.6;
+    }
+
+    .meta-card h4 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-card p {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow-y: auto;
+      }
+
+      .page {
+        min-height: auto;
+        grid-template-columns: 1fr;
+      }
+
+      .viewer {
+        min-height: 560px;
+      }
+
+      .carousel-stage {
+        height: 460px;
+      }
+
+      .state-left {
+        transform: translate(-50%, -50%) translateX(-220px) rotate(-24deg) scale(0.78);
+      }
+
+      .state-right {
+        transform: translate(-50%, -50%) translateX(220px) rotate(24deg) scale(0.78);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 16px;
+      }
+
+      .viewer,
+      .panel {
+        padding: 18px;
+        border-radius: 22px;
+      }
+
+      .product-title {
+        font-size: 28px;
+      }
+
+      .product-price {
+        font-size: 26px;
+      }
+
+      .panel {
+        max-height: none;
+        overflow: visible;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bottle {
+        width: 160px;
+        height: 380px;
+      }
+
+      .glass {
+        width: 100px;
+        height: 290px;
+      }
+
+      .flower-cluster {
+        width: 126px;
+      }
+
+      .flower.center {
+        left: 43px;
+      }
+
+      .flower.left {
+        left: 16px;
+      }
+
+      .flower.right {
+        left: 70px;
+      }
+
+      .state-left {
+        transform: translate(-50%, -50%) translateX(-160px) rotate(-20deg) scale(0.72);
+      }
+
+      .state-right {
+        transform: translate(-50%, -50%) translateX(160px) rotate(20deg) scale(0.72);
+      }
+
+      .flower-selector {
+        padding: 16px 44px;
+      }
+
+      .mini-card {
+        width: 116px;
+        height: 86px;
+      }
+
+      .mini-state-left {
+        transform: translate(-50%, -50%) translateX(-90px) scale(0.78) rotate(-8deg);
+      }
+
+      .mini-state-right {
+        transform: translate(-50%, -50%) translateX(90px) scale(0.78) rotate(8deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="viewer">
+      <div class="viewer-header">
+        <h1>Bottle Carousel</h1>
+        <div class="hint">Swipe or use arrows to switch bottles</div>
+      </div>
+
+      <div class="carousel-stage" id="carouselStage">
+        <div class="shadow-base"></div>
+        <div class="controls">
+          <button class="nav-btn" id="leftBtn" aria-label="Previous bottle">&#8592;</button>
+          <button class="nav-btn" id="rightBtn" aria-label="Next bottle">&#8594;</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="tag">16 product combinations</div>
+      <h2 class="product-title" id="productTitle">Whisky × Rose</h2>
+      <div class="product-price" id="productPrice">$68.00</div>
+      <p class="product-description" id="productDescription">
+        A warm amber whisky bottle arranged with velvety roses for a rich, romantic gift presentation.
+      </p>
+      <div class="description-read-more" id="descriptionReadMore">Click to read more</div>
+
+      <div class="section-title">Flower Selection</div>
+      <div class="flower-selector" id="flowerSelector">
+        <div class="flower-selector-head">
+          <div class="flower-selector-label">Swipe flowers</div>
+          <div class="flower-selector-hint">Drag left or right</div>
+        </div>
+
+        <button class="mini-nav left" id="flowerLeftBtn" aria-label="Previous flower">&#8592;</button>
+        <button class="mini-nav right" id="flowerRightBtn" aria-label="Next flower">&#8594;</button>
+
+        <div class="flower-mini-stage" id="flowerMiniStage"></div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-card">
+          <h4>Bottle</h4>
+          <p id="metaBottle">Whisky</p>
+        </div>
+        <div class="meta-card">
+          <h4>Flower</h4>
+          <p id="metaFlower">Rose</p>
+        </div>
+        <div class="meta-card">
+          <h4>Style</h4>
+          <p id="metaStyle">Bold & Romantic</p>
+        </div>
+        <div class="meta-card">
+          <h4>SKU</h4>
+          <p id="metaSku">WH-RO</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="description-modal" id="descriptionModal" aria-hidden="true">
+    <div class="description-modal-card" role="dialog" aria-modal="true" aria-labelledby="descriptionModalTitle">
+      <div class="description-modal-head">
+        <h3 class="description-modal-title" id="descriptionModalTitle">Product Description</h3>
+        <button class="description-modal-close" id="descriptionModalClose" aria-label="Close description">×</button>
+      </div>
+      <p class="description-modal-text" id="descriptionModalText"></p>
+    </div>
+  </div>
+
+  <script>
+    const bottles = [
+      {
+        id: "whisky",
+        name: "Whisky",
+        liquid: "linear-gradient(180deg, #d9b05f, #9d5f1f)",
+        accent: "#8b5a2b"
+      },
+      {
+        id: "gin",
+        name: "Gin",
+        liquid: "linear-gradient(180deg, #d7f3ea, #88cbb8)",
+        accent: "#4d8778"
+      },
+      {
+        id: "vodka",
+        name: "Vodka",
+        liquid: "linear-gradient(180deg, #e8eef7, #b8cade)",
+        accent: "#5a6d8c"
+      },
+      {
+        id: "wine",
+        name: "Wine",
+        liquid: "linear-gradient(180deg, #9d3558, #5a0f25)",
+        accent: "#6e1e39"
+      }
+    ];
+
+    const flowers = [
+      {
+        id: "rose",
+        name: "Rose",
+        color: "#d85a7b",
+        panel: "linear-gradient(180deg, #f9d3df, #ed9fb6)",
+        note: "Romantic & classic"
+      },
+      {
+        id: "lily",
+        name: "Lily",
+        color: "#f1efe9",
+        panel: "linear-gradient(180deg, #ffffff, #ddd8ce)",
+        note: "Elegant & soft"
+      },
+      {
+        id: "tulip",
+        name: "Tulip",
+        color: "#f09843",
+        panel: "linear-gradient(180deg, #ffd7ae, #f4a55f)",
+        note: "Bright & cheerful"
+      },
+      {
+        id: "orchid",
+        name: "Orchid",
+        color: "#b777d8",
+        panel: "linear-gradient(180deg, #e8d1f4, #c28fe4)",
+        note: "Premium & graceful"
+      }
+    ];
+
+    const products = {
+      whisky: {
+        rose: {
+          title: "Whisky × Rose",
+          price: 68,
+          description: "A warm amber whisky bottle arranged with velvety roses for a rich, romantic gift presentation.",
+          style: "Bold & Romantic",
+          sku: "WH-RO"
+        },
+        lily: {
+          title: "Whisky × Lily",
+          price: 70,
+          description: "A whisky arrangement softened by lilies, creating a refined balance between boldness and elegance.",
+          style: "Warm & Elegant",
+          sku: "WH-LI"
+        },
+        tulip: {
+          title: "Whisky × Tulip",
+          price: 66,
+          description: "A lively whisky gift set with tulip styling for a playful, modern floral finish.",
+          style: "Warm & Playful",
+          sku: "WH-TU"
+        },
+        orchid: {
+          title: "Whisky × Orchid",
+          price: 74,
+          description: "Our premium whisky presentation paired with orchids for a striking, upscale floral statement.",
+          style: "Rich & Premium",
+          sku: "WH-OR"
+        }
+      },
+      gin: {
+        rose: {
+          title: "Gin × Rose",
+          price: 64,
+          description: "A fresh botanical gin bottle finished with roses for a soft yet stylish contemporary gift.",
+          style: "Fresh & Romantic",
+          sku: "GI-RO"
+        },
+        lily: {
+          title: "Gin × Lily",
+          price: 67,
+          description: "Crisp gin meets clean white lilies in a graceful arrangement with a calm, polished look.",
+          style: "Clean & Elegant",
+          sku: "GI-LI"
+        },
+        tulip: {
+          title: "Gin × Tulip",
+          price: 63,
+          description: "A bright gin floral arrangement with tulips that feels cheerful, airy, and modern.",
+          style: "Botanical & Cheerful",
+          sku: "GI-TU"
+        },
+        orchid: {
+          title: "Gin × Orchid",
+          price: 71,
+          description: "A sophisticated gin gift styled with orchids for a premium botanical presentation.",
+          style: "Fresh & Luxurious",
+          sku: "GI-OR"
+        }
+      },
+      vodka: {
+        rose: {
+          title: "Vodka × Rose",
+          price: 62,
+          description: "A sleek vodka bottle paired with roses for a clean design softened by romantic floral detail.",
+          style: "Modern & Romantic",
+          sku: "VO-RO"
+        },
+        lily: {
+          title: "Vodka × Lily",
+          price: 65,
+          description: "A minimalist vodka arrangement elevated by lilies for a graceful and understated finish.",
+          style: "Minimal & Elegant",
+          sku: "VO-LI"
+        },
+        tulip: {
+          title: "Vodka × Tulip",
+          price: 61,
+          description: "A bright, contemporary vodka flower pairing designed to feel youthful and energetic.",
+          style: "Crisp & Bright",
+          sku: "VO-TU"
+        },
+        orchid: {
+          title: "Vodka × Orchid",
+          price: 69,
+          description: "Vodka and orchids come together in a premium composition with a sleek, luxurious mood.",
+          style: "Cool & Premium",
+          sku: "VO-OR"
+        }
+      },
+      wine: {
+        rose: {
+          title: "Wine × Rose",
+          price: 69,
+          description: "A classic wine floral pairing with roses for a timeless, gift-ready romantic arrangement.",
+          style: "Classic & Romantic",
+          sku: "WI-RO"
+        },
+        lily: {
+          title: "Wine × Lily",
+          price: 72,
+          description: "Elegant wine styling with lilies for a graceful, refined, and slightly ceremonial feel.",
+          style: "Classic & Elegant",
+          sku: "WI-LI"
+        },
+        tulip: {
+          title: "Wine × Tulip",
+          price: 67,
+          description: "A wine bottle lifted by bright tulips, creating a more cheerful and celebratory presentation.",
+          style: "Festive & Bright",
+          sku: "WI-TU"
+        },
+        orchid: {
+          title: "Wine × Orchid",
+          price: 76,
+          description: "A premium wine arrangement paired with orchids for a rich, luxurious floral gift experience.",
+          style: "Luxury Statement",
+          sku: "WI-OR"
+        }
+      }
+    };
+
+    let currentBottleIndex = 0;
+    let currentFlowerIndex = 0;
+    let isBottleAnimating = false;
+    let isFlowerAnimating = false;
+
+    const carouselStage = document.getElementById("carouselStage");
+    const leftBtn = document.getElementById("leftBtn");
+    const rightBtn = document.getElementById("rightBtn");
+
+    const flowerSelector = document.getElementById("flowerSelector");
+    const flowerMiniStage = document.getElementById("flowerMiniStage");
+    const flowerLeftBtn = document.getElementById("flowerLeftBtn");
+    const flowerRightBtn = document.getElementById("flowerRightBtn");
+
+    const productTitle = document.getElementById("productTitle");
+    const productPrice = document.getElementById("productPrice");
+    const productDescription = document.getElementById("productDescription");
+    const descriptionReadMore = document.getElementById("descriptionReadMore");
+    const descriptionModal = document.getElementById("descriptionModal");
+    const descriptionModalClose = document.getElementById("descriptionModalClose");
+    const descriptionModalText = document.getElementById("descriptionModalText");
+    const metaBottle = document.getElementById("metaBottle");
+    const metaFlower = document.getElementById("metaFlower");
+    const metaStyle = document.getElementById("metaStyle");
+    const metaSku = document.getElementById("metaSku");
+
+    function getCurrentBottle() {
+      return bottles[currentBottleIndex];
+    }
+
+    function getCurrentFlower() {
+      return flowers[currentFlowerIndex];
+    }
+
+    function createBottleElement(bottle) {
+      const bottleEl = document.createElement("div");
+      bottleEl.className = "bottle";
+      bottleEl.dataset.bottleId = bottle.id;
+
+      bottleEl.innerHTML = `
+        <div class="bottle-inner">
+          <div class="glass">
+            <div class="cap"></div>
+            <div class="neck"></div>
+            <div class="flower-cluster">
+              <div class="flower-backdrop"></div>
+              <div class="flower center"></div>
+              <div class="flower left"></div>
+              <div class="flower right"></div>
+              <div class="stem"></div>
+              <div class="leaf left"></div>
+              <div class="leaf right"></div>
+            </div>
+            <div class="glass-shell">
+              <div class="label">${bottle.name}<small>Floral Edition</small></div>
+              <div class="liquid"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      return bottleEl;
+    }
+
+    function renderBottleElements() {
+      bottles.forEach((bottle) => {
+        const el = createBottleElement(bottle);
+        carouselStage.appendChild(el);
+      });
+    }
+
+
+  function createMiniFlowerCard(flower) {
+    const card = document.createElement("div");
+    card.className = "mini-card";
+    card.dataset.flowerId = flower.id;
+    card.innerHTML = `
+      <div class="mini-card-inner" style="background:${flower.panel}">
+        <div class="mini-card-word">${flower.name}</div>
+        <div class="mini-flower-shape" style="background:${flower.color}"></div>
+      </div>
+    `;
+    return card;
+  }
+
+    function renderMiniFlowerCards() {
+      flowers.forEach((flower) => {
+        flowerMiniStage.appendChild(createMiniFlowerCard(flower));
+      });
+    }
+
+    function getRelativeOffset(index, activeIndex, total) {
+      let diff = (index - activeIndex + total) % total;
+      if (diff > total / 2) diff -= total;
+      return diff;
+    }
+
+    function applyBottleStyles() {
+      const activeFlower = getCurrentFlower();
+
+      document.querySelectorAll(".bottle").forEach((el, index) => {
+        const bottle = bottles[index];
+        const diff = getRelativeOffset(index, currentBottleIndex, bottles.length);
+
+        el.classList.remove(
+          "state-center",
+          "state-left",
+          "state-right",
+          "state-hidden-left",
+          "state-hidden-right"
+        );
+
+        if (diff === 0) el.classList.add("state-center");
+        else if (diff === -1) el.classList.add("state-left");
+        else if (diff === 1) el.classList.add("state-right");
+        else if (diff < 0) el.classList.add("state-hidden-left");
+        else el.classList.add("state-hidden-right");
+
+        el.querySelector(".liquid").style.background = bottle.liquid;
+        el.querySelector(".label").style.borderBottom = `4px solid ${bottle.accent}`;
+        el.querySelectorAll(".flower").forEach(f => {
+          f.style.background = activeFlower.color;
+        });
+        el.querySelector(".flower-backdrop").style.background = activeFlower.panel;
+      });
+    }
+
+    function applyMiniFlowerStyles() {
+      const cards = document.querySelectorAll(".mini-card");
+
+      cards.forEach((card, index) => {
+        const diff = getRelativeOffset(index, currentFlowerIndex, flowers.length);
+
+        card.classList.remove(
+          "mini-state-center",
+          "mini-state-left",
+          "mini-state-right",
+          "mini-state-hidden-left",
+          "mini-state-hidden-right"
+        );
+
+        if (diff === 0) card.classList.add("mini-state-center");
+        else if (diff === -1) card.classList.add("mini-state-left");
+        else if (diff === 1) card.classList.add("mini-state-right");
+        else if (diff < 0) card.classList.add("mini-state-hidden-left");
+        else card.classList.add("mini-state-hidden-right");
+      });
+    }
+
+    function updateProductInfo() {
+      const bottle = getCurrentBottle();
+      const flower = getCurrentFlower();
+      const product = products[bottle.id][flower.id];
+
+      productTitle.textContent = product.title;
+      productPrice.textContent = `$${product.price.toFixed(2)}`;
+      productDescription.textContent = product.description;
+      metaBottle.textContent = bottle.name;
+      metaFlower.textContent = flower.name;
+      metaStyle.textContent = product.style;
+      metaSku.textContent = product.sku;
+
+      descriptionModalText.textContent = product.description;
+      updateDescriptionClampState();
+    }
+
+    function updateDescriptionClampState() {
+      requestAnimationFrame(() => {
+        const isTruncated = productDescription.scrollHeight > productDescription.clientHeight + 1;
+        productDescription.classList.toggle("is-truncated", isTruncated);
+        descriptionReadMore.classList.toggle("visible", isTruncated);
+        productDescription.setAttribute(
+          "aria-label",
+          isTruncated ? "View full product description" : "Product description"
+        );
+      });
+    }
+
+    function openDescriptionModal() {
+      if (!productDescription.classList.contains("is-truncated")) return;
+      descriptionModal.classList.add("open");
+      descriptionModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDescriptionModal() {
+      descriptionModal.classList.remove("open");
+      descriptionModal.setAttribute("aria-hidden", "true");
+    }
+
+    function updateReadMoreLabel() {
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        descriptionReadMore.textContent = "Tap to read more";
+      } else {
+        descriptionReadMore.textContent = "Click to read more";
+      }
+    }
+
+    function moveBottle(direction) {
+      if (isBottleAnimating) return;
+      isBottleAnimating = true;
+
+      currentBottleIndex = (currentBottleIndex + direction + bottles.length) % bottles.length;
+      applyBottleStyles();
+      updateProductInfo();
+
+      setTimeout(() => {
+        isBottleAnimating = false;
+      }, 700);
+    }
+
+    function moveFlower(direction) {
+      if (isFlowerAnimating) return;
+      isFlowerAnimating = true;
+
+      currentFlowerIndex = (currentFlowerIndex + direction + flowers.length) % flowers.length;
+      applyMiniFlowerStyles();
+      applyBottleStyles();
+      updateProductInfo();
+
+      setTimeout(() => {
+        isFlowerAnimating = false;
+      }, 520);
+    }
+
+    function addSwipe(element, onSwipeLeft, onSwipeRight, threshold = 40) {
+      let startX = 0;
+      let startY = 0;
+      let endX = 0;
+      let endY = 0;
+      let tracking = false;
+
+      element.addEventListener("touchstart", (e) => {
+        const touch = e.changedTouches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        endX = startX;
+        endY = startY;
+        tracking = true;
+      }, { passive: true });
+
+      element.addEventListener("touchmove", (e) => {
+        if (!tracking) return;
+        const touch = e.changedTouches[0];
+        endX = touch.clientX;
+        endY = touch.clientY;
+      }, { passive: true });
+
+      element.addEventListener("touchend", () => {
+        if (!tracking) return;
+
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+
+        if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > Math.abs(deltaY)) {
+          if (deltaX < 0) onSwipeLeft();
+          else onSwipeRight();
+        }
+
+        tracking = false;
+      });
+
+      let mouseDown = false;
+
+      element.addEventListener("mousedown", (e) => {
+        mouseDown = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        endX = startX;
+        endY = startY;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!mouseDown) return;
+        endX = e.clientX;
+        endY = e.clientY;
+      });
+
+      window.addEventListener("mouseup", () => {
+        if (!mouseDown) return;
+
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+
+        if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > Math.abs(deltaY)) {
+          if (deltaX < 0) onSwipeLeft();
+          else onSwipeRight();
+        }
+
+        mouseDown = false;
+      });
+    }
+
+    leftBtn.addEventListener("click", () => moveBottle(-1));
+    rightBtn.addEventListener("click", () => moveBottle(1));
+
+    flowerLeftBtn.addEventListener("click", () => moveFlower(-1));
+    flowerRightBtn.addEventListener("click", () => moveFlower(1));
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") moveBottle(-1);
+      if (e.key === "ArrowRight") moveBottle(1);
+      if (e.key === "ArrowUp") moveFlower(-1);
+      if (e.key === "ArrowDown") moveFlower(1);
+      if (e.key === "Escape") closeDescriptionModal();
+    });
+
+    productDescription.addEventListener("click", openDescriptionModal);
+    descriptionReadMore.addEventListener("click", openDescriptionModal);
+    descriptionModalClose.addEventListener("click", closeDescriptionModal);
+    descriptionModal.addEventListener("click", (e) => {
+      if (e.target === descriptionModal) closeDescriptionModal();
+    });
+
+    addSwipe(carouselStage, () => moveBottle(1), () => moveBottle(-1));
+    addSwipe(flowerSelector, () => moveFlower(1), () => moveFlower(-1));
+
+    window.addEventListener("resize", updateReadMoreLabel);
+
+    renderBottleElements();
+    renderMiniFlowerCards();
+    applyBottleStyles();
+    applyMiniFlowerStyles();
+    updateReadMoreLabel();
+    updateProductInfo();
+  </script>
+</body>
+</html>
