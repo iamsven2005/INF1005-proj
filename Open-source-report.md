@@ -341,6 +341,12 @@ GitHub Repository:
 
 Slim is a lightweight PHP framework designed for building web applications and APIs. It focuses on simplicity and performance while providing essential tools for routing, middleware, and request handling.
 
+Josh Lockhart first published it to GitHub around 2010, and it has since grown into a well-respected tool in the PHP ecosystem. The project remains actively maintained, with commits as recent as early March 2026.
+
+Over 200 developers have contributed to the framework over its lifetime. Among the most prominent are Josh Lockhart himself, Rob Allen, Andrew Smith, Pierre Bérubé, and a contributor known as "odan".
+
+The codebase is written almost entirely in PHP, and with only around 50+ open issues at any given time, the repository reflects a stable and well-managed project. For a project of this age and usage scale, a modest number of open issues is normal and expected. What matters more is whether issues are being acknowledged and resolved over time. Slim is released under the MIT License.
+
 It is commonly used to build RESTful APIs.
 
 **Repository Information**
@@ -360,25 +366,34 @@ It is commonly used to build RESTful APIs.
 
 ### Strengths
 
-* Lightweight and fast
-* Simple API routing
-* Good middleware support
-* Ideal for microservices
+* Lightweight and fast: Minimal overhead makes it significantly faster than full-stack frameworks like Laravel.
+* Interoperability: Natively supports PSR-7 HTTP message interfaces, making it easy to plug in third-party PHP components.
+* Simple API routing: Clean and expressive syntax for mapping HTTP methods to specific callbacks.
+* Good middleware support: Allows developers to easily run code before and after the core application is invoked.
+* Popularity: Its popularity stems from its unopinionated nature, making it the go-to choice for developers who want to build lean microservices without unnecessary bloat.
+* Ideal for microservices: Its minimalist architecture and low overhead deliver fast performance and core routing capabilities. Which is everything needed to build efficient, standalone APIs without the excess of a full-stack framework.
 
 ### Weaknesses
 
-* Fewer built-in features compared to full frameworks
-* Requires additional libraries for complex applications
+* Fewer built-in features compared to full frameworks: Lacks built-in ORMs (Object-Relational Mapping) for database management, authentication scaffolds, or front-end templating engines.
+* Integration overhead: Requires developers to research and manually integrate additional libraries for complex applications, which can slow down initial project setup.
+* Learning curve for architecture: Because it is so flexible, less experienced developers might struggle to structure larger applications effectively.
 
 ### Security Considerations
 
 Security depends on how developers implement authentication and validation. Slim itself is secure but requires proper coding practices.
 
+Slim's core has a clean security record, but it is worth being clear about what that means in practice. The framework deliberately ships without built-in protections against common vulnerabilities like Cross-Site Scripting or SQL Injection. That responsibility sits with the developer. Proper data sanitisation, secure session handling, and thorough middleware validation are not optional extras; they are baseline requirements for any Slim application deployed in a real environment.
+
 ---
 
 ## 5.3 Usefulness / Applicability
 
-Slim would be useful for building APIs in modern web applications. Our team would consider using it if our project requires a backend API.
+Slim would be useful for building APIs in modern web applications.
+
+Slim is well-suited for what the INF1005 group project needs. Standing up a RESTful backend to serve data to the frontend is exactly the kind of task it handles efficiently, and because it does not enforce a particular structure, dividing endpoint responsibilities across the team is a practical and low-friction process. There is no heavy configuration to work through before meaningful development can begin.
+
+On the open-source side, contributing to Slim is a realistic goal given that the codebase is entirely PHP, which maps directly to the team's current skill set. Reasonable starting points would be improving the official documentation, writing unit tests for edge cases, or helping to triage existing open issues. Beyond the technical practice, it is the kind of work that produces a meaningful and verifiable public record of contribution.
 
 ---
 
