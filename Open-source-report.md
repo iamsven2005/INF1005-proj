@@ -179,6 +179,17 @@ This structured review process helps maintain the reliability and stability of t
 
 Based on the number of contributors, ongoing commits, and active issue discussions, Chart.js appears to be a **healthy and actively maintained open-source project**. This makes it a reliable choice for developers who require a stable and widely supported charting library for web applications.
 
+
+
+### Conclusion
+Chart.js is a well-established and widely adopted open-source JavaScript library for creating interactive and responsive charts in web applications. Its simple API, variety of supported chart types, and strong community support make it a practical tool for developers who need to visualize data efficiently.
+
+The project demonstrates strong repository health, with regular updates, a large number of contributors, and active issue management on GitHub. These factors indicate that the library is actively maintained and continues to evolve with modern web development needs.
+
+While Chart.js may not provide the same level of advanced customization as more complex visualization libraries such as D3.js, its ease of use and lightweight design make it an excellent choice for dashboards, analytics tools, and reporting systems.
+
+Overall, Chart.js is a reliable and useful open-source project that developers can confidently integrate into their applications. Its active community and ongoing development also present opportunities for new contributors to participate in improving the project through bug fixes, feature enhancements, and documentation improvements.
+
 ---
 
 
@@ -191,9 +202,23 @@ GitHub Repository:
 
 ## 3.1 Overview and Background
 
-Three.js is a JavaScript library used for creating 3D graphics in web browsers using WebGL. It simplifies the process of rendering 3D objects, animations, and interactive environments.
+Three.js is an open-source JavaScript library used to make 3D rendering on web applications accessible to everyday developers. Without three.js, creating even a simple rotating cube would require hundreds of lines of code traditionally. However, three.js can reduce this to just a few dozen lines of readable javescript, making it more accessible and significantly reducing the learning curve of developers such that almost anyone can begin making 3D renders. 
 
-It is widely used in web-based games, virtual reality applications, product visualization, and interactive websites.
+Three.js is built on top of WebGL, which is the name of the browser technology that enables 3D graphics. While it is powerful, it requires developers to write complex low-level code to produce even basic results. Three.js reduces complexity into a far more approachable JavaScript interface, making 3D web development accessible without requiring deep knowledge of the underlying graphics pipeline.
+
+The library provides a complete scene-graph architecture, where developers can define a scene, add mesh objects such as geometry and material, position the camera angle, and hand everything to a WebGLRenderer, which handles the GPU communication. 
+
+Beyond that, three.js also provides the following features:
+- Rich geometry Library which offers developers with a myriad of different options to integrate into their render
+- A comprehensive material system which similar to the point above, also offers developers a plethora of options to choose from when rendering their 3D model.
+- A built-in animation mixer that reads keyframe tracks from loaded 3D model files
+- helpers for cameras, light, bounding boxes and skeletons.
+- loaders for importing standard 3D assets 
+- post-processing which features an effect composer pipeline for bloom, depth-of-field, SSAO and other screen space effects
+  
+Three.js is used across a wide range of industries including web-based games, product configurators such as letting customers customise a car's colour in a browser, data visualisation, architectural walkthroughs and educational simulations.
+
+Three.js was created by Ricardo Cabello, known online as mrdoob, and first published on GitHub on 24th April, 2010
 
 **Repository Information**
 
@@ -201,9 +226,9 @@ It is widely used in web-based games, virtual reality applications, product visu
 | --------------------- | ------------------- |
 | First created         | 2010                |
 | Latest commit         | Actively maintained |
-| Contributors          | 1,500+ contributors |
+| Contributors          | 2000+ contributors  |
 | Programming languages | JavaScript          |
-| Open issues           | 500+                |
+| Open issues           | 432                 |
 | License               | MIT License         |
 
 ---
@@ -212,37 +237,59 @@ It is widely used in web-based games, virtual reality applications, product visu
 
 ### Strengths
 
-* Powerful 3D rendering capabilities
-* Large community and active development
-* Extensive documentation and tutorials
-* Supports WebGL and modern browser graphics APIs
+Lower entry level for wider accessibility without inhibiting potential or output:
+Three.js strikes a balance that is difficuly to achieve as it dramatically lowers the barrier to entry for 3D web graphics while still giving experienced developers full access to low-level WebGL capabilties via shadermaterial and custom render passes. 
+
+Vast support and documentation:
+Additionally, with over 100,000 Github stars, three.js has one of the largest communities of any graphics library with extensive documentation for its vast ecosystem. The official forum at discourse.threejs.org is highly active, and there are thousands of community examples, tutorials, courses and even several Youtube Series. To add on to this extensive support system, libraries that are built on top of three.js, such as react three fiber(r3f), also have their own sizeable communities, further adding to the library's accessibility to the community.
+
+Extensive examples repository:
+The three.js repository includes hundreds of live examples (viewable at threejs.org/examples) covering nearly every feature of the library. These examples serve as both documentation and starting templates, dramatically reducing development time for developers.
+
+MIT License Possession:
+The MIT license is the most permissive widely-used open source license. It allows use in commercial projects, closed-source products, and any other context without requiring the release of source code. This makes three.js suitable for both academic coursework, professional product development or enterprise level applications.
+
+Active and consistent maintenance:
+The repository receives new commits almost every day, and new releases are published approximately monthly. The project has maintained this pace for over a decade, which is exceptional longevity for an open source library. This continuity makes it an incredibly reliable dependency as developers can be confident that the library will continue to be maintained and updated for the foreseeable future.
 
 ### Weaknesses
+Breaking changes between revisions:
+Three.js does not follow a traditional semantic versioning, which is the industry standard numbering system for for software releases that follow the format:
 
-* Steep learning curve for beginners
-* Complex for simple projects
+Major - a big update likely to break existing code
+Minor - new features added, but existing code still works
+Patch - small bug fixes, nothing breaks
+
+However,three.js does not follow this convention and instead uses a revision system where every new iteration of the library is denoted as rxxx, where x is the updated number for the newest iteration of the library. As a result of this, developers have no formal way of identifying if a new update is a Major equivalent and risks breaking their existing code, and historically, updates between revision numbers have been known to include breaking changes. As developers have no way of identifying if the new update poses a risk to their codebase, those who do not pin their dependency version may find that their code breaks upon update. This is one of the most frequently cited frustrations in the community 
+
+No built-in physics engine:
+Three.js handles rendering only and it has no built-in physics simulation. Developers needing collision detection, rigid body dynamics, or soft body simulation must integrate a separate library such as Cannon.js, Rapier, or Ammo.js. This integration, while documented, adds complexity and can affect performance.
+
+Documentation inconsistency:
+Although the official documentation at threejs.org/docs is vast and covers the API, the descriptions are often too concise and lack practical context. Many developers often have to rely on third-party tutorials rather than the official documentations. Additionally, some newer APIs and add-ons have limited or missing documentation, requiring developers to read from the source code directly.
+
+TypeScript support is incomplete:
+Three.js is written in JavaScript. Thus, developers looking to work in TypeScript may find it somewhat lacking. Community-maintained TypeScript definitions exist (@types/three), but they occasionally lag behind the library itself, and thus, developers working in typescript may encounter type errors or gaps in covereage when utilising newer features 
 
 ### Security Considerations
 
-Three.js itself does not usually create security vulnerabilities, but improper handling of external models or textures could introduce risks.
+Three.js is a client-side rendering library, which does not handle authentication, databases or network requets in its core functionality, and as such, it has a naturally limited attack surface. As of early 2026, there are no known critical CVEs directly in the three.js core library that has been documented. However, there have been 2 documented historical instances of vulnerabilities that were directly related to the library. The first is CVE-2020-28496, which was a flaw in three.js's colour parsing logic, where passing an excessively long RGB or HSL colour string would cause uncontrolled resource consumption, potentially freezing the application. This was a coding oversight rather than an external attack, and was resolved in version 0.125.0.
 
----
+The other was a non-library related vulnerability which actually affected the documentation website instead. CVE-2022-0177 was a Cross-Site Scripting (XSS) vulnerability reported against the three.js documentation site (threejs.org/docs) as it contained a flaw in how it loaded pages. This site utilised an iframe to display the documentation content, and the URL hash for the site was being used to directly determine what was being loaded into that iframe, without any proper validation. This meant that a potential threat actor could craft a malicious URL link that executed arbitrary Javascript code in the browser by effectively piggybacking off threejs.org's trusted domain, allowing threat actors to perform a multitude of malicious actions such as redirecting the user to a fake site, displaying fake content, or acting on behalf of the user without their knowledge. While this is not directly related to the library itself, it is still something worth noting as the documentation is something consistently and very often referred to by developers which effectively puts them at risk of an attack. Fortunately, this vulnerability was discovered and patched before the CVE was officially published, and because it never actually affected the main library but rather the documentation site, it was therefore invalidated and the CVE was withdrawn. 
+
+Additionally, there is another important security-adjacent considerations worth noting:
+- Three.js relies on the browser's WebGL instance, which historically has its own security risks such as low-level memory vulnerabilities in the browser's graphics layer, as well as GPU-level attacks that can track users across sessions or leak sensitive information about other processes running on the same device.Although this is more of a browser concern rather than a three.js concern, developers should still be aware of them when working on security-sensitive applications.
+
 
 ## 3.3 Usefulness / Applicability
+The teams direction for our INF1005 project is centered around an escape room booking site, which can have great potential when integrated with three.js, given that previews of escape rooms can be done in great detail to showcase what customers can expect when entering the room, a rough overview of the terrain to see if its within their fear appetite, and provide more interactivity and leave a better impression of the business to site visitors, further enticing their commitment to book a session. 
 
-Three.js would be useful for projects requiring interactive 3D graphics such as product visualizations or educational simulations.
+Additionally, given that Three.js is a highly supported and well-documented 3D rendering library, it does show some promise with elevating the project's final submission and overall complexity of the website, on top of the points mentioned before. However, there is one massive drawback, that being that although the library is well-documented with extensive support both officially and by third-parties, it still requires the user to have an understanding of 3D concepts, coordinating systems, cameras, shading and geometry and many more complex subjects. Attempting to integrate 3D rendering of escape rooms, whilst a promising idea, must take into account that the group has no prior experience with working on 3D models and are complete beginners that are completely unfamiliar with 3D graphics. This will consequentually lead to the team having to invest a signifigcant amount of time to learning not only 3D graphics, but also how to utilise the tools that three.js itself provides, which may not be very feasible given the time constraints given by the project deadline. 
 
-However, our team may not use it in simple web applications due to its complexity.
+Thus, whilst it shows great potential, the team feels that embarking on integrating this library into our projects would be far too ambitious and not practical when accounting for progress of the site's functionality, as well as its due deadline, and hence, will not be integrating the library into our project. 
 
-## 2.5 Conclusion
-
-Chart.js is a well-established and widely adopted open-source JavaScript library for creating interactive and responsive charts in web applications. Its simple API, variety of supported chart types, and strong community support make it a practical tool for developers who need to visualize data efficiently.
-
-The project demonstrates strong repository health, with regular updates, a large number of contributors, and active issue management on GitHub. These factors indicate that the library is actively maintained and continues to evolve with modern web development needs.
-
-While Chart.js may not provide the same level of advanced customization as more complex visualization libraries such as D3.js, its ease of use and lightweight design make it an excellent choice for dashboards, analytics tools, and reporting systems.
-
-Overall, Chart.js is a reliable and useful open-source project that developers can confidently integrate into their applications. Its active community and ongoing development also present opportunities for new contributors to participate in improving the project through bug fixes, feature enhancements, and documentation improvements.
+## 3.4 Realistic opportunities for contribution 
+Whilst three.js is a versatile library which can provide many solutions and features for various purposes, our team would not pursue contributing to the core code database at this stage, primarily because the usecase of this library is far out of our scope for this course, and whilst pulling it off would be impressive, it comes at the cost of the rest of the more practical aspects of our website and its not realistic. Hence, as the team will not be utilising this library, we will therefore not be able to make any productive contributions to it as well, neither in its codebase, bug reporting, or documentation improvements.  
 
 ---
 
