@@ -181,36 +181,6 @@ Based on the number of contributors, ongoing commits, and active issue discussio
 
 ---
 
-## 2.3 Usefulness / Applicability
-
-Chart.js is highly useful for web development projects that require data visualization, particularly in dashboards, monitoring systems, and analytics platforms.
-
-For example, it can be used to display:
-
-* System performance metrics
-* Network traffic statistics
-* User activity trends
-* Business analytics dashboards
-
-Its ease of integration with modern frameworks such as **React, Vue, and Next.js** also makes it suitable for contemporary web development environments.
-
-Our team could potentially contribute to the project by:
-
-* Reporting bugs or usability issues
-* Improving documentation
-* Contributing code enhancements or feature requests
-
-Participating in such open-source projects would also help improve our understanding of collaborative software development.
-
----
-
-If you want, I can also help you add **one more section that lecturers usually expect** in OSS reports:
-
-**2.4 Repository Activity Analysis (GitHub Insights)**
-
-which will **boost your marks** because it shows you analyzed the repo instead of just describing it.
-
----
 
 # 3. Three.js
 
