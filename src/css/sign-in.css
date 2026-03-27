@@ -1,12 +1,11 @@
-/* =========================================
-   1. GLOBAL & LAYOUT
-   ========================================= */
-html,
-body {
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap');
+
+html, body {
   height: 100%;
-  background-color: #1a1a1a !important;
-  color: #fff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #2c3038 !important;
+  color: #c8c0b0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
 }
 
 main {
@@ -15,108 +14,167 @@ main {
   justify-content: center;
   padding-top: 40px;
   padding-bottom: 40px;
-  /* Ensures the form is centered vertically */
-  min-height: calc(100vh - 200px); 
+  min-height: calc(100vh - 200px);
 }
 
-/* =========================================
-   2. SIGN-IN CARD STYLING
-   ========================================= */
 .form-signin {
   width: 100%;
-  max-width: 380px; /* Slightly wider for better breathing room */
-  padding: 2rem;
+  max-width: 380px;
+  padding: 2.5rem 2rem;
   margin: 0 auto;
-  
-  /* THEME: Dark Glass Effect */
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid #333;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
+  background: #222629;
+  border: 1px solid #3d4450;
+  border-top: 2px solid #c49a3c;
+  border-radius: 0;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }
 
 .form-signin img {
-  filter: invert(1) brightness(100%);
+  filter: invert(1) brightness(60%) sepia(1) hue-rotate(5deg) saturate(3);
+  opacity: 0.7;
 }
 
-.form-signin .form-floating:focus-within {
-  z-index: 2;
+.form-signin h1 {
+  font-family: 'Cormorant Garamond', serif;
+  color: #e8dcc8;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
 }
 
-/* =========================================
-   3. INPUT FIELDS (Dark Mode)
-   ========================================= */
 .form-signin input.form-control {
-  background-color: #0a0a0a; /* Very dark grey inputs */
-  border: 1px solid #444;
-  color: #fff;
+  background-color: #1a1c1f !important;
+  border: 1px solid #3d4450 !important;
+  border-radius: 0 !important;
+  color: #c8c0b0 !important;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
 }
 
-/* Change the text color of the placeholder/label */
 .form-signin .form-floating label {
-  color: #888;
+  color: #5a6270;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* Focus State: Blood Red Glow */
 .form-signin input.form-control:focus {
-  border-color: #ff4444;
-  box-shadow: 0 0 0 0.25rem rgba(255, 68, 68, 0.25);
-  color: #fff;
+  border-color: #c49a3c !important;
+  box-shadow: none !important;
+  background-color: #1a1c1f !important;
+  color: #c8c0b0 !important;
 }
 
-/* Specific styling for the top input (Email) */
 .form-signin input[type="email"] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 
-/* Specific styling for the bottom input (Password) */
 .form-signin input[type="password"] {
-  margin-bottom: 20px; /* Increased space before button */
+  margin-bottom: 20px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
-/* =========================================
-   4. BUTTONS & TEXT
-   ========================================= */
-/* Style the main "Sign in" button */
+.form-control.is-invalid {
+  border-color: #8b3a28 !important;
+  background-image: none !important;
+}
+
+.form-control.is-valid {
+  border-color: #2d5a2d !important;
+  background-image: none !important;
+}
+
 .form-signin .btn-primary {
-  background-color: #ff4444;
-  border-color: #ff4444;
-  font-weight: bold;
+  background-color: #c49a3c;
+  border: 1px solid #c49a3c;
+  color: #1a1c1f;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  border-radius: 0;
+  padding: 12px;
   transition: all 0.3s ease;
 }
 
 .form-signin .btn-primary:hover {
-  background-color: #cc0000;
-  border-color: #cc0000;
-  box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+  background-color: #d4aa4c;
+  border-color: #d4aa4c;
+  color: #1a1c1f;
+  box-shadow: none;
 }
 
-/* Headings inside the form */
-.form-signin h1 {
-  color: #ff4444;
-  text-shadow: 2px 2px 4px #000;
-  margin-bottom: 1.5rem;
-}
-
-/* Checkbox styling (Remember me) */
 .form-check-input {
-  background-color: #333;
-  border-color: #555;
+  background-color: #1a1c1f;
+  border-color: #3d4450;
+  border-radius: 0;
 }
 
 .form-check-input:checked {
-  background-color: #ff4444;
-  border-color: #ff4444;
+  background-color: #c49a3c;
+  border-color: #c49a3c;
 }
 
-.checkbox {
-  margin-bottom: 1rem;
-  color: #ccc;
+.form-check-label {
+  color: #5a6270;
+  font-size: 0.8rem;
 }
+
+.text-center.p-3 p {
+  color: #5a6270;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+}
+
+.text-center.p-3 a {
+  color: #c49a3c;
+}
+
+.text-center.p-3 a:hover {
+  color: #d4aa4c;
+}
+
+.alert-danger {
+  background: rgba(139, 58, 40, 0.2);
+  border: 1px solid #8b3a28;
+  border-left: 3px solid #8b3a28;
+  color: #ffbbaa;
+  border-radius: 0;
+  font-size: 0.85rem;
+}
+
+.alert-success {
+  background: rgba(45, 90, 45, 0.2);
+  border: 1px solid #2d5a2d;
+  border-left: 3px solid #2d5a2d;
+  color: #aaffaa;
+  border-radius: 0;
+  font-size: 0.85rem;
+}
+
+.requirements {
+  font-size: 0.75rem;
+  color: #3d4450;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  font-family: 'Jost', sans-serif;
+}
+
+.requirements ul {
+  margin: 0.25rem 0;
+  padding-left: 1rem;
+  list-style: none;
+}
+
+.requirements li::before { content: '— '; color: #3d4450; }
+.requirement-met { color: #5a8a5a !important; }
+.requirement-met::before { content: '✓ ' !important; color: #5a8a5a !important; }
+.requirement-unmet { color: #3d4450; }
