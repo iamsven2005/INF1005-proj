@@ -11,18 +11,18 @@ body {
 
 .success-container {
   max-width: 600px; width: 100%; background: #222629;
-  border: 1px solid #3d4450; border-top: 2px solid #c49a3c;
+  border: 1px solid #3d4450; border-top: 2px solid #cc3333;
   border-radius: 0; padding: 50px 40px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5); text-align: center;
 }
 
 .success-icon {
   width: 64px; height: 64px; background: transparent;
-  border: 1px solid #c49a3c; border-radius: 0;
+  border: 1px solid #cc3333; border-radius: 0;
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 30px; animation: scaleIn 0.5s ease-out;
 }
-.success-icon svg { width: 32px; height: 32px; stroke: #c49a3c; }
+.success-icon svg { width: 32px; height: 32px; stroke: #cc3333; }
 
 @keyframes scaleIn {
   0%   { transform: scale(0); opacity: 0; }
@@ -33,17 +33,17 @@ body {
 h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: #e8dcc8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
 .subtitle { color: #5a6270; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 30px; }
 
-.booking-id { background: #1a1c1f; border: 1px solid #3d4450; border-left: 2px solid #c49a3c; padding: 15px; margin-bottom: 30px; font-size: 0.85rem; color: #5a6270; text-align: left; }
-.booking-id strong { color: #c49a3c; font-size: 1rem; letter-spacing: 0.1em; }
+.booking-id { background: #1a1c1f; border: 1px solid #3d4450; border-left: 2px solid #cc3333; padding: 15px; margin-bottom: 30px; font-size: 0.85rem; color: #5a6270; text-align: left; }
+.booking-id strong { color: #cc3333; font-size: 1rem; letter-spacing: 0.1em; }
 
 .booking-details { background: #1a1c1f; border: 1px solid #3d4450; padding: 25px; margin-bottom: 30px; text-align: left; }
 .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #3d4450; }
-.detail-row:last-child { border-bottom: none; border-top: 1px solid #c49a3c; color: #c49a3c; font-size: 1rem; padding-top: 15px; margin-top: 5px; }
+.detail-row:last-child { border-bottom: none; border-top: 1px solid #cc3333; color: #cc3333; font-size: 1rem; padding-top: 15px; margin-top: 5px; }
 .detail-label { color: #5a6270; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .detail-value { color: #c8c0b0; font-size: 0.9rem; }
 
-.btn-primary { background: #c49a3c; border: 1px solid #c49a3c; color: #1a1c1f; padding: 12px 40px; border-radius: 0; font-family: 'Jost', sans-serif; font-weight: 500; font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; transition: all 0.3s ease; text-decoration: none; display: inline-block; cursor: pointer; }
-.btn-primary:hover { background: #d4aa4c; border-color: #d4aa4c; color: #1a1c1f; }
+.btn-primary { background: #cc3333; border: 1px solid #cc3333; color: #1a1c1f; padding: 12px 40px; border-radius: 0; font-family: 'Jost', sans-serif; font-weight: 500; font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; transition: all 0.3s ease; text-decoration: none; display: inline-block; cursor: pointer; }
+.btn-primary:hover { background: #e04444; border-color: #e04444; color: #1a1c1f; }
 
 .email-notice { color: #3d4450; font-size: 0.78rem; margin-top: 20px; line-height: 1.8; }
-.email-notice svg { width: 14px; height: 14px; margin-right: 5px; vertical-align: text-bottom; stroke: #c49a3c; }
+.email-notice svg { width: 14px; height: 14px; margin-right: 5px; vertical-align: text-bottom; stroke: #cc3333; }

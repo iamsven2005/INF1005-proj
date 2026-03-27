@@ -8,7 +8,7 @@
   font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
   transition: color 0.3s ease; font-family: 'Jost', sans-serif;
 }
-.back-link:hover { color: #c49a3c; }
+.back-link:hover { color: #cc3333; }
 
 .room-hero {
   width: 100%; height: 420px; object-fit: cover; border-radius: 0;
@@ -23,7 +23,7 @@
 }
 .thumbnail-gallery::-webkit-scrollbar { height: 2px; }
 .thumbnail-gallery::-webkit-scrollbar-track { background: #1a1c1f; }
-.thumbnail-gallery::-webkit-scrollbar-thumb { background: #c49a3c; }
+.thumbnail-gallery::-webkit-scrollbar-thumb { background: #cc3333; }
 
 .thumbnail-gallery img {
   width: 110px; height: 80px; object-fit: cover; border-radius: 0;
@@ -31,7 +31,7 @@
   opacity: 0.5; flex-shrink: 0;
 }
 .thumbnail-gallery img:hover,
-.thumbnail-gallery img.active { border-color: #c49a3c; opacity: 1; box-shadow: 0 0 10px rgba(196,154,60,0.2); }
+.thumbnail-gallery img.active { border-color: #cc3333; opacity: 1; box-shadow: 0 0 10px rgba(196,154,60,0.2); }
 
 .room-content {
   max-width: 1200px; margin: 0 auto;
@@ -50,7 +50,7 @@
 .room-details h2 {
   font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600;
   color: #e8dcc8; letter-spacing: 0.1em; text-transform: uppercase;
-  border-bottom: 1px solid #c49a3c; padding-bottom: 6px;
+  border-bottom: 1px solid #cc3333; padding-bottom: 6px;
   margin-bottom: 1rem; margin-top: 2rem; display: inline-block;
 }
 .room-details h3 {
@@ -69,10 +69,10 @@ hr { border: none; border-top: 1px solid #3d4450; margin: 1.5rem 0; }
 .room-details p { color: #7a8290; line-height: 1.8; margin-bottom: 1rem; font-size: 0.9rem; }
 .room-details ul { list-style: none; padding-left: 0; }
 .room-details li { color: #6a7280; margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative; font-size: 0.85rem; line-height: 1.6; }
-.room-details li::before { content: "—"; position: absolute; left: 0; color: #c49a3c; font-size: 0.8rem; }
+.room-details li::before { content: "—"; position: absolute; left: 0; color: #cc3333; font-size: 0.8rem; }
 
 .pricing-card {
-  background: #222629; border: 1px solid #3d4450; border-top: 2px solid #c49a3c;
+  background: #222629; border: 1px solid #3d4450; border-top: 2px solid #cc3333;
   border-radius: 0; padding: 2rem; text-align: center;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4); position: sticky; top: 100px; align-self: start;
 }
@@ -85,18 +85,18 @@ hr { border: none; border-top: 1px solid #3d4450; margin: 1.5rem 0; }
 .price-details li::before { font-size: 1rem; opacity: 0.7; }
 .price-details li:nth-child(1)::before { content: "⏱"; }
 .price-details li:nth-child(2)::before { content: "👥"; }
-.price-details li:nth-child(3)::before { content: "★"; color: #c49a3c; opacity: 1; }
+.price-details li:nth-child(3)::before { content: "★"; color: #cc3333; opacity: 1; }
 
 .cancellation-note { font-size: 0.72rem; color: #3d4450; margin-top: 1rem; letter-spacing: 0.08em; text-transform: uppercase; }
 
 .book-btn {
-  background: #c49a3c; color: #1a1c1f; border: 1px solid #c49a3c;
+  background: #cc3333; color: #1a1c1f; border: 1px solid #cc3333;
   padding: 1rem 2rem; font-family: 'Jost', sans-serif; font-size: 0.8rem;
   border-radius: 0; width: 100%; cursor: pointer; font-weight: 500;
   text-transform: uppercase; letter-spacing: 0.2em; transition: all 0.3s ease;
   margin-top: 1rem; display: block; text-align: center;
 }
-.book-btn:hover { background: #d4aa4c; border-color: #d4aa4c; color: #1a1c1f; text-decoration: none; box-shadow: 0 4px 16px rgba(196,154,60,0.3); }
+.book-btn:hover { background: #e04444; border-color: #e04444; color: #1a1c1f; text-decoration: none; box-shadow: 0 4px 16px rgba(196,154,60,0.3); }
 
 .rating-btn {
   background: transparent; color: #5a6270; border: 1px solid #3d4450;

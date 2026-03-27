@@ -84,7 +84,7 @@ p.text-muted {
 .col-lg-7 .card:first-child,
 .col-lg-5 .card:first-child,
 .card:first-of-type {
-  border-top: 2px solid #c49a3c !important;
+  border-top: 2px solid #cc3333 !important;
 }
 
 hr.my-4 {
@@ -114,7 +114,7 @@ hr.my-4 {
   color: #c8c0b0 !important;
   font-family: 'Jost', sans-serif;
 }
-.collapse .form-control:focus { border-color: #c49a3c !important; box-shadow: none !important; }
+.collapse .form-control:focus { border-color: #cc3333 !important; box-shadow: none !important; }
 .collapse .form-label { color: #5a6270; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .collapse .form-text { color: #3d4450; font-size: 0.72rem; }
 
@@ -123,7 +123,7 @@ hr.my-4 {
   font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em;
   text-transform: uppercase; border-radius: 0; padding: 4px 14px; transition: all 0.3s ease;
 }
-.btn-outline-primary:hover { background: #1a1c1f; border-color: #c49a3c; color: #c8c0b0; }
+.btn-outline-primary:hover { background: #1a1c1f; border-color: #cc3333; color: #c8c0b0; }
 
 .btn-outline-secondary {
   background: transparent; border: 1px solid #3d4450; color: #5a6270;
@@ -134,11 +134,11 @@ hr.my-4 {
 a.btn.btn-outline-secondary { padding: 6px 16px; }
 
 .btn-primary {
-  background-color: #c49a3c !important; border: 1px solid #c49a3c !important;
+  background-color: #cc3333 !important; border: 1px solid #cc3333 !important;
   color: #1a1c1f !important; font-family: 'Jost', sans-serif; font-size: 0.78rem;
   letter-spacing: 0.18em; text-transform: uppercase; border-radius: 0 !important; transition: all 0.3s ease;
 }
-.btn-primary:hover { background-color: #d4aa4c !important; border-color: #d4aa4c !important; color: #1a1c1f !important; }
+.btn-primary:hover { background-color: #e04444 !important; border-color: #e04444 !important; color: #1a1c1f !important; }
 
 .btn-success {
   background: transparent; border: 1px solid #2d5a2d; color: #5a8a5a;
@@ -155,7 +155,7 @@ a.btn.btn-outline-secondary { padding: 6px 16px; }
 .btn-outline-danger:hover { background: #8b3a28; color: #fff; border-color: #8b3a28; }
 
 .badge.bg-light {
-  background-color: rgba(196,154,60,0.15) !important; color: #c49a3c !important;
+  background-color: rgba(196,154,60,0.15) !important; color: #cc3333 !important;
   border: 1px solid rgba(196,154,60,0.3) !important; border-radius: 0 !important;
   font-family: 'Jost', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; font-weight: 400;
 }
@@ -182,7 +182,7 @@ a.btn.btn-outline-secondary { padding: 6px 16px; }
   font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em;
   text-transform: uppercase; padding: 6px 16px; transition: all 0.3s ease;
 }
-.nav-pills .nav-link.active { background: #c49a3c !important; border-color: #c49a3c; color: #1a1c1f !important; font-weight: 500; }
+.nav-pills .nav-link.active { background: #cc3333 !important; border-color: #cc3333; color: #1a1c1f !important; font-weight: 500; }
 .nav-pills .nav-link:hover:not(.active) { background: #1a1c1f; border-color: #5a6270; color: #c8c0b0; }
 
 .table { color: #c8c0b0; font-size: 0.85rem; border-color: #3d4450; }
@@ -208,12 +208,12 @@ a.btn.btn-outline-secondary { padding: 6px 16px; }
   border-radius: 0; font-size: 0.65rem; letter-spacing: 0.1em; font-weight: 400;
 }
 
-.modal-content { background: #222629; border: 1px solid #3d4450; border-top: 2px solid #c49a3c; border-radius: 0; }
+.modal-content { background: #222629; border: 1px solid #3d4450; border-top: 2px solid #cc3333; border-radius: 0; }
 .modal-header.bg-danger { background: #8b3a28 !important; border-bottom: 1px solid #6b2a18; }
 .modal-body { background: #222629; color: #c8c0b0; }
 .modal-body .text-danger { color: #ff8866 !important; font-family: 'Jost', sans-serif; font-size: 0.85rem; text-transform: none; letter-spacing: 0; }
 .modal-body .form-control { background: #1a1c1f !important; border: 1px solid #3d4450 !important; border-radius: 0 !important; color: #c8c0b0 !important; }
-.modal-body .form-control:focus { border-color: #c49a3c !important; box-shadow: none !important; }
+.modal-body .form-control:focus { border-color: #cc3333 !important; box-shadow: none !important; }
 .modal-body label { color: #5a6270; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .modal-footer { background: #1a1c1f; border-top: 1px solid #3d4450; }
 

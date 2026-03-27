@@ -221,7 +221,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         .requirements {
             font-size: 0.85rem;
-            color: #6c757d;
+            color: #7a8290;;
             margin-top: 0.25rem;
             margin-bottom: 0.5rem;
             padding-left: 0.5rem;
@@ -238,8 +238,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-weight: 500;
         }
         .requirement-unmet {
-            color: #6c757d;
+            color: #7a8290;
         }
+        .requirements strong,
+        .requirements .text-muted {
+            color: #7a8290;
+        }
+        .requirements .small {
+            color: #7a8290;
+        }
+        .requirements ul li {
+            color: #7a8290;
+        }
+
         .info-icon {
             color: #0d6efd;
             font-size: 0.9rem;
@@ -276,7 +287,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php if ($success !== true): ?>
             <div class="form-floating mb-2">
                 <input type="text" name="username" class="form-control" id="floatingUsername" 
-                       placeholder="Username" value="<?= htmlspecialchars($username) ?>" required>
+                       placeholder=" " value="<?= htmlspecialchars($username) ?>" required>
                 <label for="floatingUsername">Username</label>
             </div>
             <div class="requirements">
@@ -291,7 +302,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="form-floating mb-2">
                 <input type="email" name="email" class="form-control" id="floatingEmail" 
-                       placeholder="Email" value="<?= htmlspecialchars($email) ?>" required>
+                       placeholder=" " value="<?= htmlspecialchars($email) ?>" required>
                 <label for="floatingEmail">Email address</label>
             </div>
             <div class="requirements mb-3">
@@ -300,7 +311,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="form-floating mb-2">
                 <input type="password" name="password" class="form-control" id="floatingPassword" 
-                       placeholder="Password" required>
+                       placeholder=" " required>
                 <label for="floatingPassword">Password</label>
             </div>
             <div class="requirements" id="passwordRequirements">
@@ -318,7 +329,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="form-floating mb-3">
                 <input type="password" name="password_confirm" class="form-control" id="floatingPasswordConfirm" 
-                       placeholder="Confirm Password" required>
+                       placeholder=" " required>
                 <label for="floatingPasswordConfirm">Confirm Password</label>
             </div>
 
