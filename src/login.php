@@ -103,40 +103,6 @@ ob_end_flush();
     
     <?php include "inc/head.inc.php"; ?>
     <link href="css/sign-in.css" rel="stylesheet">
-    
-    <style>
-        html,
-        body {
-            height: 100%;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            background-color: #f5f5f5;
-        }
-
-        main {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem 0;
-        }
-
-        .form-signin {
-            max-width: 330px;
-            width: 100%;
-        }
-        
-        .form-control.is-invalid {
-            border-color: #dc3545;
-        }
-        
-        .form-control.is-valid {
-            border-color: #198754;
-        }
-    </style>
 </head>
 
 <body>
