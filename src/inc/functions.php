@@ -152,24 +152,24 @@ function getBadgeColor($fearLevel)
 {
     switch ($fearLevel) {
         case 'Very Scary':
-            return 'bg-dark text-light';
+            return 'bg-danger';
         case 'Scary':
             return 'bg-danger';
         case 'Mildly Scary':
-            return 'bg-warning';
+            return 'bg-warning text-dark';
         case 'Not Scary':
             return 'bg-success';
         default:
-            return 'bg-light text-dark';
+            return 'bg-secondary text-light';
     }
 }
 
 //helper function to get the right css color for difficulty factor
 function getDifficultyColor($roomDifficulty)
 {
-    switch ($roomDifficulty) {
+   switch ($roomDifficulty) {
         case 'Very Hard':
-            return 'bg-dark text-light';
+            return 'bg-danger';
         case 'Hard':
             return 'bg-danger';
         case 'Medium':
@@ -177,8 +177,8 @@ function getDifficultyColor($roomDifficulty)
         case 'Easy':
             return 'bg-success';
         default:
-            return 'bg-light text-dark';
-    }
+            return 'bg-secondary text-light';
+   }
 }
 
 //helper function to get the right css color for live-actor factor
