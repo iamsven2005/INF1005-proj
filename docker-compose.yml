@@ -43,6 +43,7 @@ services:
       - ./db/init/001-schema.sql:/docker-entrypoint-initdb.d/001-schema.sql
       - ./db/init/002-seed-dev.sql:/docker-entrypoint-initdb.d/002-seed.sql
       - ./db/init/003-add-room-images.sql:/docker-entrypoint-initdb.d/003-add-room-images.sql
+      - ./db/init/004-add-promotional-banners.sql:/docker-entrypoint-initdb.d/004-add-promotional-banners.sql
     networks:
       - app-network
     healthcheck:
