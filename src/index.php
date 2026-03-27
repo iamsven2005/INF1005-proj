@@ -8,6 +8,7 @@ $conn = getDbConnection();
 //variable to hold list of rooms and number of rooms
 $rooms = [];
 $roomCount = 0;
+$promoBanners = [];
 
 $sql = "SELECT 
             r.roomID, 
@@ -33,6 +34,21 @@ if ($result && $result->num_rows > 0) {
     $roomCount = $result->num_rows;
 }
 
+// Defensive check so homepage still loads if migrations are not applied yet.
+$bannerTableExists = $conn->query("SHOW TABLES LIKE 'PromotionalBanners'");
+if ($bannerTableExists && $bannerTableExists->num_rows > 0) {
+        $bannerSql = "SELECT bannerID, title, subtitle, imagePath, ctaText, ctaUrl, startDate, endDate
+                                    FROM PromotionalBanners
+                                    WHERE is_active = 1
+                                        AND (startDate IS NULL OR startDate <= CURDATE())
+                                        AND (endDate IS NULL OR endDate >= CURDATE())
+                                    ORDER BY created_at DESC";
+        $bannerResult = $conn->query($bannerSql);
+        if ($bannerResult && $bannerResult->num_rows > 0) {
+                $promoBanners = $bannerResult->fetch_all(MYSQLI_ASSOC);
+        }
+}
+
 //close connection
 $conn->close();
 
@@ -49,6 +65,35 @@ $conn->close();
 <body>
     <?php include "inc/nav.inc.php" ?>
     <?php include "inc/header.inc.php" ?>
+
+    <?php if (!empty($promoBanners)): ?>
+    <section class="container mt-4 mb-2" aria-label="Special Event Promotions">
+        <?php foreach ($promoBanners as $banner): ?>
+            <?php
+                $bannerStyle = "";
+                if (!empty($banner['imagePath'])) {
+                    $safeImage = htmlspecialchars(str_replace(' ', '%20', $banner['imagePath']));
+                    $bannerStyle = "background-image: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('" . $safeImage . "');";
+                }
+            ?>
+            <article class="promo-banner mb-3" style="<?php echo $bannerStyle; ?>">
+                <div class="promo-banner-content">
+                    <p class="promo-banner-tag mb-2">Special Event</p>
+                    <h2 class="h4 mb-2"><?php echo htmlspecialchars($banner['title']); ?></h2>
+                    <?php if (!empty($banner['subtitle'])): ?>
+                        <p class="mb-3"><?php echo htmlspecialchars($banner['subtitle']); ?></p>
+                    <?php endif; ?>
+
+                    <?php if (!empty($banner['ctaText']) && !empty($banner['ctaUrl'])): ?>
+                        <a href="<?php echo htmlspecialchars($banner['ctaUrl']); ?>" class="btn btn-danger">
+                            <?php echo htmlspecialchars($banner['ctaText']); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </article>
+        <?php endforeach; ?>
+    </section>
+    <?php endif; ?>
 
     <!-- search bar -->
     <div class="search-section section-gap text-center">

@@ -79,6 +79,26 @@ $bookings = [];
 if ($result && $result->num_rows > 0) {
     $bookings = $result->fetch_all(MYSQLI_ASSOC);
 }
+
+$sql = "SELECT 
+            rv.reviewID,
+            rv.rating,
+            rv.comment,
+            rv.created_at,
+            r.roomName,
+            u.username,
+            u.email
+        FROM Reviews rv
+        JOIN Rooms r ON rv.Rooms_roomID = r.roomID
+        JOIN Users u ON rv.Users_userID = u.userID
+        ORDER BY rv.created_at DESC";
+
+$result = $conn->query($sql);
+$reviews = [];
+
+if ($result && $result->num_rows > 0) {
+    $reviews = $result->fetch_all(MYSQLI_ASSOC);
+}
 $conn->close();
 ?>
 
@@ -109,6 +129,13 @@ $conn->close();
             <?php if (isset($_GET['msg']) && $_GET['msg'] == 'updated'): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong>Success!</strong> The room details have been updated.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($_GET['msg']) && $_GET['msg'] == 'review_deleted'): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> The review has been deleted.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
@@ -197,6 +224,7 @@ $conn->close();
 
             <div class="text-center mt-4">
                 <a href="create_room.php" class="btn btn-success me-2">Create New Room</a>
+                <a href="manage_banners.php" class="btn btn-warning me-2">Manage Promo Banners</a>
                 <a href="index.php" class="btn btn-outline-light">Back to Home</a>
             </div>
         </div>
@@ -254,7 +282,98 @@ $conn->close();
     </table>
 </div>
 
+<h2 class="text-center mt-5 mb-4 text-warning">Manage Reviews</h2>
+
+<div class="container mb-3">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text bg-dark text-light border-secondary">Search:</span>
+                <input type="text" id="adminReviewSearchInput" class="form-control bg-dark text-light border-secondary" onkeyup="filterReviewTable()" placeholder="Search by review ID, room, user, or email..." aria-label="Search reviews">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive container">
+    <table class="table table-dark table-hover align-middle" id="reviewsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Room</th>
+                <th>User</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Created</th>
+                <th class="text-end">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($reviews)): ?>
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        No reviews found.
+                    </td>
+                </tr>
+            <?php else: ?>
+                <?php foreach ($reviews as $review): ?>
+                    <tr class="review-searchable-row">
+                        <td><?= (int)$review['reviewID']; ?></td>
+                        <td><?= htmlspecialchars($review['roomName']); ?></td>
+                        <td>
+                            <?= htmlspecialchars($review['username']); ?><br>
+                            <small><?= htmlspecialchars($review['email']); ?></small>
+                        </td>
+                        <td><?= str_repeat('★', (int)$review['rating']); ?> (<?= (int)$review['rating']; ?>/5)</td>
+                        <td style="max-width: 360px; white-space: normal; word-break: break-word;">
+                            <?= nl2br(htmlspecialchars($review['comment'] ?? '')); ?>
+                        </td>
+                        <td><?= htmlspecialchars($review['created_at']); ?></td>
+                        <td class="text-end">
+                            <form action="process_delete_review.php" method="POST"
+                                  onsubmit="return confirm('Delete this review permanently? This cannot be undone.');"
+                                  style="display: inline-block;">
+                                <input type="hidden" name="reviewID" value="<?= (int)$review['reviewID']; ?>">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
+
+    <div id="noReviewResults" class="text-center py-5" style="display: none;">
+        <h4 class="text-muted">No reviews match your search.</h4>
+    </div>
+</div>
+
     </main>
+
+    <script>
+        function filterReviewTable() {
+            const input = document.getElementById('adminReviewSearchInput');
+            const filter = input.value.toLowerCase();
+            const rows = document.querySelectorAll('#reviewsTable tbody tr.review-searchable-row');
+            const noResults = document.getElementById('noReviewResults');
+
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (noResults) {
+                noResults.style.display = visibleCount === 0 && rows.length > 0 ? 'block' : 'none';
+            }
+        }
+    </script>
 
     <?php include "inc/footer.inc.php" ?>
 </body>
