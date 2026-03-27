@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap');
+
+:root,
+[data-bs-theme="light"] {
+  --bs-body-bg: #2c3038;
+  --bs-body-color: #c8c0b0;
+  --bs-card-bg: #222629;
+  --bs-card-color: #c8c0b0;
+  --bs-border-color: #3d4450;
+  --bs-secondary-bg: #222629;
+  --bs-tertiary-bg: #1a1c1f;
+  --bs-light-rgb: 34, 38, 41;
+  --bs-heading-color: #e8dcc8;
+}
+
+main.container {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+}
+
+main.container h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e8dcc8;
+}
+
+main.container .text-muted {
+  color: #5a6270 !important;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+}
+
+.card {
+  background-color: #222629 !important;
+  border: 1px solid #3d4450 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+card * {
+  color: inherit;
+}
+
+.card-body {
+  background-color: #222629 !important;
+  color: #c8c0b0 !important;
+}
+
+.card-body p,
+.card-body div {
+    color: #c8c0b0 !important;
+}
+
+card-body h1,
+.card-body h2,
+.card-body h3,
+.card-body h4,
+.card-body h5 {
+  color: #e8dcc8 !important;
+}
+
+.card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e8dcc8;
+  font-size: 1rem;
+}
+
+.fw-semibold {
+  color: #e8dcc8 !important;
+  font-weight: 400 !important;
+}
+
+card-body .text-muted,
+main.container .text-muted,
+p.text-muted {
+  color: #7a8290 !important;
+}
+
+.col-lg-7 .card:first-child,
+.col-lg-5 .card:first-child,
+.card:first-of-type {
+  border-top: 2px solid #c49a3c !important;
+}
+
+hr.my-4 {
+  border-color: #3d4450;
+  opacity: 1;
+}
+
+.text-muted.small {
+  font-size: 0.7rem !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5a6270 !important;
+}
+
+.fw-semibold {
+  color: #c8c0b0;
+  font-weight: 400 !important;
+  font-size: 0.9rem;
+}
+
+.collapse .border { border-color: #3d4450 !important; border-radius: 0 !important; }
+.collapse .bg-light { background-color: #1a1c1f !important; }
+.collapse .form-control {
+  background-color: #1a1c1f !important;
+  border: 1px solid #3d4450 !important;
+  border-radius: 0 !important;
+  color: #c8c0b0 !important;
+  font-family: 'Jost', sans-serif;
+}
+.collapse .form-control:focus { border-color: #c49a3c !important; box-shadow: none !important; }
+.collapse .form-label { color: #5a6270; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.collapse .form-text { color: #3d4450; font-size: 0.72rem; }
+
+.btn-outline-primary {
+  background: transparent; border: 1px solid #3d4450; color: #7a8290;
+  font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; border-radius: 0; padding: 4px 14px; transition: all 0.3s ease;
+}
+.btn-outline-primary:hover { background: #1a1c1f; border-color: #c49a3c; color: #c8c0b0; }
+
+.btn-outline-secondary {
+  background: transparent; border: 1px solid #3d4450; color: #5a6270;
+  font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; border-radius: 0; padding: 4px 14px; transition: all 0.3s ease;
+}
+.btn-outline-secondary:hover { background: #1a1c1f; border-color: #5a6270; color: #c8c0b0; }
+a.btn.btn-outline-secondary { padding: 6px 16px; }
+
+.btn-primary {
+  background-color: #c49a3c !important; border: 1px solid #c49a3c !important;
+  color: #1a1c1f !important; font-family: 'Jost', sans-serif; font-size: 0.78rem;
+  letter-spacing: 0.18em; text-transform: uppercase; border-radius: 0 !important; transition: all 0.3s ease;
+}
+.btn-primary:hover { background-color: #d4aa4c !important; border-color: #d4aa4c !important; color: #1a1c1f !important; }
+
+.btn-success {
+  background: transparent; border: 1px solid #2d5a2d; color: #5a8a5a;
+  font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; border-radius: 0; transition: all 0.3s ease;
+}
+.btn-success:hover { background: #2d5a2d; color: #fff; }
+
+.btn-outline-danger {
+  background: transparent; border: 1px solid #8b3a28; color: #ff8866;
+  font-family: 'Jost', sans-serif; font-size: 0.78rem; letter-spacing: 0.15em;
+  text-transform: uppercase; border-radius: 0; transition: all 0.3s ease;
+}
+.btn-outline-danger:hover { background: #8b3a28; color: #fff; border-color: #8b3a28; }
+
+.badge.bg-light {
+  background-color: rgba(196,154,60,0.15) !important; color: #c49a3c !important;
+  border: 1px solid rgba(196,154,60,0.3) !important; border-radius: 0 !important;
+  font-family: 'Jost', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; font-weight: 400;
+}
+
+.p-3.border.rounded-3 {
+  background: #1a1c1f !important; border: 1px solid #3d4450 !important; border-radius: 0 !important;
+}
+
+.border-danger-subtle { border-color: #8b3a28 !important; border-top: 2px solid #8b3a28 !important; }
+.text-danger { color: #ff8866 !important; font-family: 'Cormorant Garamond', serif; letter-spacing: 0.08em; text-transform: uppercase; }
+
+.alert-success {
+  background: rgba(45,90,45,0.15); border: 1px solid #2d5a2d; border-left: 3px solid #2d5a2d;
+  color: #aaffaa; border-radius: 0; font-size: 0.85rem;
+}
+.alert-danger {
+  background: rgba(139,58,40,0.15); border: 1px solid #8b3a28; border-left: 3px solid #8b3a28;
+  color: #ffbbaa; border-radius: 0; font-size: 0.85rem;
+}
+.btn-close { filter: invert(1) brightness(0.5); }
+
+.nav-pills .nav-link {
+  background: transparent; border: 1px solid #3d4450; border-radius: 0; color: #5a6270;
+  font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 6px 16px; transition: all 0.3s ease;
+}
+.nav-pills .nav-link.active { background: #c49a3c !important; border-color: #c49a3c; color: #1a1c1f !important; font-weight: 500; }
+.nav-pills .nav-link:hover:not(.active) { background: #1a1c1f; border-color: #5a6270; color: #c8c0b0; }
+
+.table { color: #c8c0b0; font-size: 0.85rem; border-color: #3d4450; }
+.table thead th {
+  color: #5a6270; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 400; border-bottom: 1px solid #3d4450; background: #1a1c1f;
+}
+.table tbody tr { border-bottom: 1px solid #3d4450; transition: background 0.2s ease; }
+.table-hover tbody tr:hover { background-color: #222629; color: #c8c0b0; }
+.table td { border-color: #3d4450; vertical-align: middle; color: #c8c0b0; }
+.table .fw-semibold { color: #e8dcc8; font-weight: 400 !important; font-family: 'Cormorant Garamond', serif; letter-spacing: 0.05em; }
+
+.badge.bg-success {
+  background-color: transparent !important; border: 1px solid #2d5a2d; color: #5a8a5a !important;
+  border-radius: 0; font-size: 0.65rem; letter-spacing: 0.1em; font-weight: 400;
+}
+.badge.bg-danger {
+  background-color: transparent !important; border: 1px solid #8b3a28; color: #ff8866 !important;
+  border-radius: 0; font-size: 0.65rem; letter-spacing: 0.1em; font-weight: 400;
+}
+.badge.bg-secondary {
+  background-color: transparent !important; border: 1px solid #3d4450; color: #5a6270 !important;
+  border-radius: 0; font-size: 0.65rem; letter-spacing: 0.1em; font-weight: 400;
+}
+
+.modal-content { background: #222629; border: 1px solid #3d4450; border-top: 2px solid #c49a3c; border-radius: 0; }
+.modal-header.bg-danger { background: #8b3a28 !important; border-bottom: 1px solid #6b2a18; }
+.modal-body { background: #222629; color: #c8c0b0; }
+.modal-body .text-danger { color: #ff8866 !important; font-family: 'Jost', sans-serif; font-size: 0.85rem; text-transform: none; letter-spacing: 0; }
+.modal-body .form-control { background: #1a1c1f !important; border: 1px solid #3d4450 !important; border-radius: 0 !important; color: #c8c0b0 !important; }
+.modal-body .form-control:focus { border-color: #c49a3c !important; box-shadow: none !important; }
+.modal-body label { color: #5a6270; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.modal-footer { background: #1a1c1f; border-top: 1px solid #3d4450; }
+
+.btn-danger {
+  background: transparent; border: 1px solid #8b3a28; color: #ff8866;
+  font-family: 'Jost', sans-serif; font-size: 0.75rem; letter-spacing: 0.15em;
+  text-transform: uppercase; border-radius: 0; transition: all 0.3s ease;
+}
+.btn-danger:hover { background: #8b3a28; color: #fff; border-color: #8b3a28; }
+
+.btn-secondary {
+  background: transparent; border: 1px solid #3d4450; color: #5a6270;
+  font-family: 'Jost', sans-serif; font-size: 0.75rem; letter-spacing: 0.12em;
+  text-transform: uppercase; border-radius: 0; transition: all 0.3s ease;
+}
+.btn-secondary:hover { background: #1a1c1f; border-color: #5a6270; color: #c8c0b0; }
