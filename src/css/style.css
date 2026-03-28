@@ -207,6 +207,7 @@ footer {
 
 .navbar-nav .nav-link:hover {
   color: var(--amber) !important;
+  background-color: transparent;
 }
 
 .navbar-toggler {
@@ -236,7 +237,7 @@ a.btn-primary {
 a.btn-primary:hover {
   background-color: var(--amber-hot);
   border-color: var(--amber-hot);
-  color: #1a1c1f;
+  color: #1a1c1f !important;
 }
 
 .navbar-brand img {
