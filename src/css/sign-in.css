@@ -53,11 +53,15 @@ main {
 }
 
 .form-signin .form-floating label {
-  color: #5a6270;
+  color: #cc3333;
   font-family: 'Jost', sans-serif;
   font-size: 1rem;
   letter-spacing: 0.02em;
   text-transform: none;
+}
+
+.form-signin .form-floating:focus-within label {
+  color:#cc3333;
 }
 
 .form-signin input.form-control:focus {
