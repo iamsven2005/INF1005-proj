@@ -82,7 +82,8 @@ LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
 INSERT INTO `Users` 
 VALUES 
-(1,'admin_user','admin@myhorror.com','$2y$10$iiybSps2iCUo1CfJvCZaEut6viAe9omAXBU9UZTiJO0zpwlUpcfgu','2025-11-12 16:56:51',1);
+(1,'admin_user','admin@myhorror.com','$2y$10$iiybSps2iCUo1CfJvCZaEut6viAe9omAXBU9UZTiJO0zpwlUpcfgu','2025-11-12 16:56:51',1),
+(2,'user','user@myhorror.com','$2a$12$aTE3.9jTNV..JCmChtJHcu/Drj2dMsiF.7yW.TK4X5b5hfF9HNtGa','2025-12-12 16:56:51',0);
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

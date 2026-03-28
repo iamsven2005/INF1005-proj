@@ -10,6 +10,35 @@
 
     $(document).ready(function(){
         var date = new Date();
+        var targetDateString = null;
+        
+        // 1. Try to get date from iframe URL parameter
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('date')) {
+            targetDateString = urlParams.get('date');
+        } 
+        // 2. Try to get date from parent window URL parameter
+        else if (window.parent && window.parent.location.search) {
+            var parentParams = new URLSearchParams(window.parent.location.search);
+            if (parentParams.has('date')) {
+                targetDateString = parentParams.get('date');
+            }
+        }
+        // 3. Fallback to PHP Session
+        else if (typeof selectedDateFromSession !== 'undefined' && selectedDateFromSession) {
+            targetDateString = selectedDateFromSession;
+        }
+
+        // Save globally so init_calendar can use it reliably
+        window.calendarTargetDate = targetDateString;
+
+        if (targetDateString) {
+            var parts = targetDateString.split('-');
+            if (parts.length === 3) {
+                date = new Date(parts[0], parts[1] - 1, parts[2]);
+            }
+        }
+
         // calendar
         $(".right-button").click({date: date}, next_month);
         $(".left-button").click({date: date}, prev_month);
@@ -73,14 +102,31 @@
                 cell.addClass("disabled-td");
             }
 
+            // Parse the target date
+            var targetDateObj = null;
+            if (window.calendarTargetDate) {
+                var parts = window.calendarTargetDate.split('-');
+                if (parts.length === 3) {
+                    targetDateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                }
+            }
+
             if ($(".active-date").length === 0 && !disabled) {
-                if (isCurrentMonth && day === today.getDate()) {
+                // Check if rendering the target month and day
+                if (targetDateObj && year === targetDateObj.getFullYear() && month === targetDateObj.getMonth() && day === targetDateObj.getDate()) {
                     cell.addClass("active-date");
                     show_timings(full_date);
                 }
-                else if (isFutureMonth && day === 1) {
-                    cell.addClass("active-date");
-                    show_timings(full_date);
+                // If target day not in view (e.g. navigated to a future month manually)
+                else if (!targetDateObj || (year !== targetDateObj.getFullYear() || month !== targetDateObj.getMonth())) {
+                    if (isCurrentMonth && day === today.getDate()) {
+                        cell.addClass("active-date");
+                        show_timings(full_date);
+                    }
+                    else if (isFutureMonth && day === 1) {
+                        cell.addClass("active-date");
+                        show_timings(full_date);
+                    }
                 }
             }
 

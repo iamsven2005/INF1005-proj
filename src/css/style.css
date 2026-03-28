@@ -207,6 +207,7 @@ footer {
 
 .navbar-nav .nav-link:hover {
   color: var(--amber) !important;
+  background-color: transparent;
 }
 
 .navbar-toggler {
@@ -625,4 +626,13 @@ hr {
   .room-card .card-img-top {
     height: 250px;
   }
+}
+
+/* Date Filter Styles */
+.room-card.date-filtered-out {
+    display: none !important;
+}
+
+.date-filter-input {
+    max-width: 200px;
 }

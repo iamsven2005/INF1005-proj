@@ -23,7 +23,9 @@ $sql = "SELECT
                 (SELECT imagePath FROM RoomImages 
                  WHERE Rooms_roomID = r.roomID LIMIT 1),
                 r.imagePath
-            ) as imagePath
+            ) as imagePath,
+            COALESCE((SELECT COUNT(*) FROM Reviews WHERE Rooms_roomID = r.roomID), 0) as review_count,
+            COALESCE((SELECT AVG(rating) FROM Reviews WHERE Rooms_roomID = r.roomID), 0) as avg_rating
         FROM Rooms r
         ORDER BY r.roomID";
 $result = $conn->query($sql);
@@ -122,6 +124,12 @@ $conn->close();
             </div>
             <div class="collapse" id="filterCollapse">
                 <div class="filter-box">
+                
+                <div class="mb-3">
+                    <h3>Date</h3>
+                    <input type="date" id="dateFilter" class="form-control date-filter-input">
+                </div>
+
                 <div class="mb-3">
                     <h3>Fear Factor</h3>
                     <div class="form-check form-check-inline">
@@ -228,7 +236,7 @@ $conn->close();
             <section id="Rooms">
                 <h4 class="mb-3" style="padding-top: 40px;">Rooms</h4>
                 <div class="text-center my-4">
-                    <p class="text-muted">Showing <?php echo $roomCount; ?> rooms</p>
+                    <p class="text-muted" id="roomCountText">Showing <?php echo $roomCount; ?> rooms</p>
                 </div>
 
                 <div class="row g-4" id="roomContainer">
@@ -248,6 +256,7 @@ $conn->close();
 
                             <!-- in built data to make filter easier -->
                             <div class="col-md-4 room-card"
+                                data-room-id="<?php echo $room['roomID']; ?>"
                                 data-fear="<?php echo $dataFear; ?>"
                                 data-actor="<?php echo $dataActor; ?>"
                                 data-genre="<?php echo $dataGenre; ?>"
@@ -276,7 +285,46 @@ $conn->close();
                                             <?php echo htmlspecialchars($room['roomGenre']); ?>
                                         </span>
 
-                                        <h5 class="card-title mt-2"><?php echo htmlspecialchars($room['roomName']); ?></h5>
+                                        <h5 class="card-title mt-2 mb-1"><?php echo htmlspecialchars($room['roomName']); ?></h5>
+                                        
+                                        <div class="mb-2 d-flex align-items-center">
+                                            <span class="fw-bold me-2">
+                                                <?php echo number_format((float)($room['avg_rating'] ?? 0), 1); ?>
+                                            </span>
+                                            
+                                            <span class="text-warning me-1">
+                                                <?php
+                                                $avgRating = (float)($room['avg_rating'] ?? 0);
+                                                
+                                                // Get the whole number for full stars
+                                                $fullStars = (int)floor($avgRating);
+                                                
+                                                // If there's any decimal remaining, it counts as a half star
+                                                $hasHalfStar = ($avgRating - $fullStars) > 0;
+                                                
+                                                // Calculate remaining empty stars (total 5)
+                                                $emptyStars = 5 - $fullStars - ($hasHalfStar ? 1 : 0);
+                                                
+                                                // Print full stars
+                                                echo str_repeat('&#9733;', $fullStars);
+                                                
+                                                // Print exact half star using CSS overlay
+                                                if ($hasHalfStar) {
+                                                    echo '<span style="position: relative; display: inline-block;">';
+                                                    echo '&#9734;'; // Background empty star
+                                                    echo '<span style="position: absolute; left: 0; top: 0; width: 50%; overflow: hidden;">&#9733;</span>'; // Overlay exact half full star
+                                                    echo '</span>';
+                                                }
+                                                
+                                                // Print empty stars
+                                                echo str_repeat('&#9734;', $emptyStars); 
+                                                ?>
+                                            </span>
+                                            
+                                            <span class="small">
+                                                (<?php echo (int)($room['review_count'] ?? 0); ?>)
+                                            </span>
+                                        </div>
 
                                          <a href="room.php?name=<?php echo urlencode($room['roomName']); ?>" 
                                            class="stretched-link" 
@@ -297,6 +345,111 @@ $conn->close();
     </main>
     <?php include "inc/footer.inc.php" ?>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let dateInput = document.getElementById('dateFilter');
+        if(dateInput) {
+            let now = new Date();
+            let effectiveDate = new Date(now);
+            
+            // Check if it's 9 PM (21:00) or later
+            if (now.getHours() >= 21) {
+                // Add 1 day to make the effective date tomorrow
+                effectiveDate.setDate(effectiveDate.getDate() + 1);
+            }
+            
+            let maxDate = new Date(effectiveDate);
+            maxDate.setMonth(effectiveDate.getMonth() + 3); // Up to 3 months in future
+            
+            let tzoffset = effectiveDate.getTimezoneOffset() * 60000; 
+            let effectiveISO = (new Date(effectiveDate.getTime() - tzoffset)).toISOString().split('T')[0];
+            let maxISO = (new Date(maxDate.getTime() - tzoffset)).toISOString().split('T')[0];
+            
+            dateInput.min = effectiveISO;
+            dateInput.max = maxISO;
+            dateInput.value = effectiveISO;
+            
+            dateInput.addEventListener('change', function() {
+                checkRoomAvailability(this.value);
+            });
+            
+            // Check immediately on load using the calculated effective date
+            checkRoomAvailability(effectiveISO);
+        }
+
+        // Hook into your existing filters and search bar to update the count dynamically
+        document.querySelectorAll('input[name="fear"], input[name="actor"], input[name="difficulty"], input[type="checkbox"]').forEach(input => {
+            input.addEventListener('change', () => setTimeout(updateRoomCount, 50));
+        });
+        
+        let searchInput = document.getElementById('search');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', () => setTimeout(updateRoomCount, 50));
+        }
+    });
+
+    function checkRoomAvailability(dateStr) {
+        // Append the date parameter to the room links
+        document.querySelectorAll('.room-card a.stretched-link').forEach(link => {
+            let url = new URL(link.href, window.location.origin);
+            url.searchParams.set('date', dateStr);
+            link.href = url.toString();
+        });
+
+        // Query the API
+        fetch('api/api_available_rooms.php?date=' + dateStr)
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    let availableRooms = data.available_rooms.map(String);
+                    document.querySelectorAll('.room-card').forEach(card => {
+                        let roomId = card.getAttribute('data-room-id');
+                        if(availableRooms.includes(roomId)) {
+                            card.classList.remove('date-filtered-out');
+                        } else {
+                            card.classList.add('date-filtered-out');
+                        }
+                    });
+                    
+                    // Rerun your existing filter logic (if it exists) to make sure combinations work
+                    if(typeof filterRooms === 'function') {
+                        filterRooms();
+                    }
+                    
+                    // Update the text count after applying the date filter
+                    updateRoomCount();
+                }
+            })
+            .catch(error => console.error('Error fetching availability:', error));
+    }
+
+    // New function to accurately count visible rooms
+    function updateRoomCount() {
+        let visibleCount = 0;
+        
+        document.querySelectorAll('.room-card').forEach(card => {
+            // Check if card is hidden by our date filter class OR by your existing filterRooms() display styles
+            const isDateHidden = card.classList.contains('date-filtered-out');
+            const isStyleHidden = window.getComputedStyle(card).display === 'none';
+            
+            if (!isDateHidden && !isStyleHidden) {
+                visibleCount++;
+            }
+        });
+        
+        // Update the text
+        let countElement = document.getElementById('roomCountText');
+        if (countElement) {
+            countElement.textContent = `Showing ${visibleCount} rooms`;
+        }
+        
+        // Toggle the "No results found" message if exactly 0 rooms are visible
+        let noResultsMsg = document.getElementById('noResultsMessage');
+        if (noResultsMsg) {
+            noResultsMsg.style.display = (visibleCount === 0) ? 'block' : 'none';
+        }
+    }
+    </script>
 </body>
 
 </html>
