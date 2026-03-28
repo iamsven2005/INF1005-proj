@@ -23,7 +23,9 @@ $sql = "SELECT
                 (SELECT imagePath FROM RoomImages 
                  WHERE Rooms_roomID = r.roomID LIMIT 1),
                 r.imagePath
-            ) as imagePath
+            ) as imagePath,
+            COALESCE((SELECT COUNT(*) FROM Reviews WHERE Rooms_roomID = r.roomID), 0) as review_count,
+            COALESCE((SELECT AVG(rating) FROM Reviews WHERE Rooms_roomID = r.roomID), 0) as avg_rating
         FROM Rooms r
         ORDER BY r.roomID";
 $result = $conn->query($sql);
@@ -283,7 +285,46 @@ $conn->close();
                                             <?php echo htmlspecialchars($room['roomGenre']); ?>
                                         </span>
 
-                                        <h5 class="card-title mt-2"><?php echo htmlspecialchars($room['roomName']); ?></h5>
+                                        <h5 class="card-title mt-2 mb-1"><?php echo htmlspecialchars($room['roomName']); ?></h5>
+                                        
+                                        <div class="mb-2 d-flex align-items-center">
+                                            <span class="fw-bold me-2">
+                                                <?php echo number_format((float)($room['avg_rating'] ?? 0), 1); ?>
+                                            </span>
+                                            
+                                            <span class="text-warning me-1">
+                                                <?php
+                                                $avgRating = (float)($room['avg_rating'] ?? 0);
+                                                
+                                                // Get the whole number for full stars
+                                                $fullStars = (int)floor($avgRating);
+                                                
+                                                // If there's any decimal remaining, it counts as a half star
+                                                $hasHalfStar = ($avgRating - $fullStars) > 0;
+                                                
+                                                // Calculate remaining empty stars (total 5)
+                                                $emptyStars = 5 - $fullStars - ($hasHalfStar ? 1 : 0);
+                                                
+                                                // Print full stars
+                                                echo str_repeat('&#9733;', $fullStars);
+                                                
+                                                // Print exact half star using CSS overlay
+                                                if ($hasHalfStar) {
+                                                    echo '<span style="position: relative; display: inline-block;">';
+                                                    echo '&#9734;'; // Background empty star
+                                                    echo '<span style="position: absolute; left: 0; top: 0; width: 50%; overflow: hidden;">&#9733;</span>'; // Overlay exact half full star
+                                                    echo '</span>';
+                                                }
+                                                
+                                                // Print empty stars
+                                                echo str_repeat('&#9734;', $emptyStars); 
+                                                ?>
+                                            </span>
+                                            
+                                            <span class="small">
+                                                (<?php echo (int)($room['review_count'] ?? 0); ?>)
+                                            </span>
+                                        </div>
 
                                          <a href="room.php?name=<?php echo urlencode($room['roomName']); ?>" 
                                            class="stretched-link" 
@@ -308,24 +349,32 @@ $conn->close();
     document.addEventListener("DOMContentLoaded", function() {
         let dateInput = document.getElementById('dateFilter');
         if(dateInput) {
-            let today = new Date();
-            let maxDate = new Date();
-            maxDate.setMonth(today.getMonth() + 3); // Up to 3 months in future
+            let now = new Date();
+            let effectiveDate = new Date(now);
             
-            let tzoffset = today.getTimezoneOffset() * 60000; 
-            let todayISO = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
+            // Check if it's 9 PM (21:00) or later
+            if (now.getHours() >= 21) {
+                // Add 1 day to make the effective date tomorrow
+                effectiveDate.setDate(effectiveDate.getDate() + 1);
+            }
+            
+            let maxDate = new Date(effectiveDate);
+            maxDate.setMonth(effectiveDate.getMonth() + 3); // Up to 3 months in future
+            
+            let tzoffset = effectiveDate.getTimezoneOffset() * 60000; 
+            let effectiveISO = (new Date(effectiveDate.getTime() - tzoffset)).toISOString().split('T')[0];
             let maxISO = (new Date(maxDate.getTime() - tzoffset)).toISOString().split('T')[0];
             
-            dateInput.min = todayISO;
+            dateInput.min = effectiveISO;
             dateInput.max = maxISO;
-            dateInput.value = todayISO;
+            dateInput.value = effectiveISO;
             
             dateInput.addEventListener('change', function() {
                 checkRoomAvailability(this.value);
             });
             
-            // Check immediately on load for today
-            checkRoomAvailability(todayISO);
+            // Check immediately on load using the calculated effective date
+            checkRoomAvailability(effectiveISO);
         }
 
         // Hook into your existing filters and search bar to update the count dynamically
