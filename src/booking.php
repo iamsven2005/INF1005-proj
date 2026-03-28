@@ -1,6 +1,11 @@
 <?php 
 session_start();
 
+// Catch the date passed from the iframe URL and save it to the session
+if (isset($_GET['date']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['date'])) {
+    $_SESSION['selected_date'] = htmlspecialchars($_GET['date']);
+}
+
 $user_id = $_SESSION['user_id'] ?? '';
 $token = $_SESSION['allow_booking'] ?? '';
 $room_id = $_SESSION['room_id'] ?? '';
@@ -32,7 +37,7 @@ unset($_SESSION['allow_booking']);
             include "inc/head.inc.php"
         ?>
         <link rel="stylesheet" href="css/calendar.css"> 
-        <script defer src="js/calendar.js"></script>
+        <script defer src="js/calendar.js?v=<?php echo time(); ?>"></script>
         <script src="https://js.stripe.com/v3/"></script>
     </head>
     <body>

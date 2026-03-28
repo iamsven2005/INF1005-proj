@@ -626,3 +626,12 @@ hr {
     height: 250px;
   }
 }
+
+/* Date Filter Styles */
+.room-card.date-filtered-out {
+    display: none !important;
+}
+
+.date-filter-input {
+    max-width: 200px;
+}

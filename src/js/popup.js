@@ -42,7 +42,16 @@ function registerEventListeners() {
 
 function popUp()
 {
+    // 1. Grab the date from the parent URL (room.php?name=...&date=...)
+    var urlParams = new URLSearchParams(window.location.search);
+    var selectedDate = urlParams.get('date');
+
+    // 2. Append it to the booking iframe URL
     var popUpURL = "booking.php";
+    if (selectedDate) {
+        popUpURL += "?date=" + encodeURIComponent(selectedDate);
+    }
+
     var modal = document.getElementById("modal");
     var iframe = document.getElementById("popupFrame");
     

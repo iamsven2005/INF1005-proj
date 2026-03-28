@@ -122,6 +122,12 @@ $conn->close();
             </div>
             <div class="collapse" id="filterCollapse">
                 <div class="filter-box">
+                
+                <div class="mb-3">
+                    <h3>Date</h3>
+                    <input type="date" id="dateFilter" class="form-control date-filter-input">
+                </div>
+
                 <div class="mb-3">
                     <h3>Fear Factor</h3>
                     <div class="form-check form-check-inline">
@@ -228,7 +234,7 @@ $conn->close();
             <section id="Rooms">
                 <h4 class="mb-3" style="padding-top: 40px;">Rooms</h4>
                 <div class="text-center my-4">
-                    <p class="text-muted">Showing <?php echo $roomCount; ?> rooms</p>
+                    <p class="text-muted" id="roomCountText">Showing <?php echo $roomCount; ?> rooms</p>
                 </div>
 
                 <div class="row g-4" id="roomContainer">
@@ -248,6 +254,7 @@ $conn->close();
 
                             <!-- in built data to make filter easier -->
                             <div class="col-md-4 room-card"
+                                data-room-id="<?php echo $room['roomID']; ?>"
                                 data-fear="<?php echo $dataFear; ?>"
                                 data-actor="<?php echo $dataActor; ?>"
                                 data-genre="<?php echo $dataGenre; ?>"
@@ -297,6 +304,103 @@ $conn->close();
     </main>
     <?php include "inc/footer.inc.php" ?>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let dateInput = document.getElementById('dateFilter');
+        if(dateInput) {
+            let today = new Date();
+            let maxDate = new Date();
+            maxDate.setMonth(today.getMonth() + 3); // Up to 3 months in future
+            
+            let tzoffset = today.getTimezoneOffset() * 60000; 
+            let todayISO = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
+            let maxISO = (new Date(maxDate.getTime() - tzoffset)).toISOString().split('T')[0];
+            
+            dateInput.min = todayISO;
+            dateInput.max = maxISO;
+            dateInput.value = todayISO;
+            
+            dateInput.addEventListener('change', function() {
+                checkRoomAvailability(this.value);
+            });
+            
+            // Check immediately on load for today
+            checkRoomAvailability(todayISO);
+        }
+
+        // Hook into your existing filters and search bar to update the count dynamically
+        document.querySelectorAll('input[name="fear"], input[name="actor"], input[name="difficulty"], input[type="checkbox"]').forEach(input => {
+            input.addEventListener('change', () => setTimeout(updateRoomCount, 50));
+        });
+        
+        let searchInput = document.getElementById('search');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', () => setTimeout(updateRoomCount, 50));
+        }
+    });
+
+    function checkRoomAvailability(dateStr) {
+        // Append the date parameter to the room links
+        document.querySelectorAll('.room-card a.stretched-link').forEach(link => {
+            let url = new URL(link.href, window.location.origin);
+            url.searchParams.set('date', dateStr);
+            link.href = url.toString();
+        });
+
+        // Query the API
+        fetch('api/api_available_rooms.php?date=' + dateStr)
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    let availableRooms = data.available_rooms.map(String);
+                    document.querySelectorAll('.room-card').forEach(card => {
+                        let roomId = card.getAttribute('data-room-id');
+                        if(availableRooms.includes(roomId)) {
+                            card.classList.remove('date-filtered-out');
+                        } else {
+                            card.classList.add('date-filtered-out');
+                        }
+                    });
+                    
+                    // Rerun your existing filter logic (if it exists) to make sure combinations work
+                    if(typeof filterRooms === 'function') {
+                        filterRooms();
+                    }
+                    
+                    // Update the text count after applying the date filter
+                    updateRoomCount();
+                }
+            })
+            .catch(error => console.error('Error fetching availability:', error));
+    }
+
+    // New function to accurately count visible rooms
+    function updateRoomCount() {
+        let visibleCount = 0;
+        
+        document.querySelectorAll('.room-card').forEach(card => {
+            // Check if card is hidden by our date filter class OR by your existing filterRooms() display styles
+            const isDateHidden = card.classList.contains('date-filtered-out');
+            const isStyleHidden = window.getComputedStyle(card).display === 'none';
+            
+            if (!isDateHidden && !isStyleHidden) {
+                visibleCount++;
+            }
+        });
+        
+        // Update the text
+        let countElement = document.getElementById('roomCountText');
+        if (countElement) {
+            countElement.textContent = `Showing ${visibleCount} rooms`;
+        }
+        
+        // Toggle the "No results found" message if exactly 0 rooms are visible
+        let noResultsMsg = document.getElementById('noResultsMessage');
+        if (noResultsMsg) {
+            noResultsMsg.style.display = (visibleCount === 0) ? 'block' : 'none';
+        }
+    }
+    </script>
 </body>
 
 </html>
