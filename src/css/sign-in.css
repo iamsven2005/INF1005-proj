@@ -64,12 +64,40 @@ main {
   color:#cc3333;
 }
 
+.form-signin .form-floating input:not(:placeholder-shown) ~ label {
+  color: #cc3333;
+}
+
+.form-control.is-invalid {
+  border-color: #cc3333 !important;
+  box-shadow: 0 0 0 2px rgba(204, 51, 51, 0.25) !important;
+  background-image: none !important;
+}
+
+.form-control.is-valid {
+  border-color: #2d5a2d !important;
+  box-shadow: 0 0 0 2px rgba(45, 90, 45, 0.25) !important;
+  background-image: none !important;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.form-control.is-invalid {
+  animation: shake 0.3s ease;
+}
+
 .form-signin input.form-control:focus {
   border-color: #cc3333 !important;
   box-shadow: none !important;
   background-color: #1a1c1f !important;
   color: #c8c0b0 !important;
 }
+
+
 
 .form-signin input[type="email"] {
   margin-bottom: -1px;

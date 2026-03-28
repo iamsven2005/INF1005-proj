@@ -368,6 +368,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         const password = document.getElementById('floatingPassword');
         const passwordConfirm = document.getElementById('floatingPasswordConfirm');
         
+        function shakeField(field) {
+            field.classList.remove('is-invalid');
+            void field.offsetWidth;
+            field.classList.add('is-invalid');
+        }
         // Password requirements elements
         const reqLength = document.getElementById('req-length');
         const reqUppercase = document.getElementById('req-uppercase');
@@ -474,11 +479,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (errors.length > 0) {
                 e.preventDefault();
                 
+                const inputs = form.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.setAttribute('autocomplete', 'off');
+                });
+                setTimeout(() => {
+                    inputs.forEach(input => {
+                        input.removeAttribute('autocomplete');
+                    });
+                }, 1000);
+
+
                 // Mark invalid fields
-                if (usernameErrors.length > 0) username.classList.add('is-invalid');
-                if (!emailPattern.test(email.value)) email.classList.add('is-invalid');
-                if (!checkPasswordRequirements(password.value)) password.classList.add('is-invalid');
-                if (password.value !== passwordConfirm.value) passwordConfirm.classList.add('is-invalid');
+                if (usernameErrors.length > 0) shakeField(username);
+                if (!emailPattern.test(email.value)) shakeField(email);
+                if (!checkPasswordRequirements(password.value)) shakeField(password);
+                if (password.value !== passwordConfirm.value) shakeField(passwordConfirm);
                 
                 // Scroll to first error
                 const firstInvalid = form.querySelector('.is-invalid');
