@@ -125,14 +125,14 @@ ob_end_flush();
             
             <div class="form-floating mb-2">
                 <input type="email" class="form-control" name="email" id="floatingInput" 
-                       value="<?= htmlspecialchars($email) ?>" required placeholder="name@example.com" 
+                       value="<?= htmlspecialchars($email) ?>" required placeholder=" " 
                        autocomplete="email">
                 <label for="floatingInput">Email address</label>
             </div>
             
             <div class="form-floating mb-3">
                 <input type="password" class="form-control" name="password" id="floatingPassword" 
-                       required placeholder="Password" autocomplete="current-password">
+                       required placeholder=" " autocomplete="current-password">
                 <label for="floatingPassword">Password</label>
             </div>
             
