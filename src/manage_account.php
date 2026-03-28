@@ -188,32 +188,7 @@
 
     <title>Your account details</title>
     <?php include "inc/head.inc.php"; ?>
-	
-	<style>
-		.account-section {
-			background: #f8f9fa;
-			border-radius: 8px;
-			padding: 20px;
-			margin-bottom: 20px;
-            color: #000;
-		}
-		.account-section h3 {
-			margin-bottom: 15px;
-			color: #333;
-		}
-		.info-display {
-			background: white;
-			padding: 15px;
-			border-radius: 5px;
-			margin-bottom: 15px;
-            color: #000;
-		}
-		.danger-zone {
-			background: #fff5f5;
-			border: 2px solid #dc3545;
-            color: #000;
-		}
-	</style>
+    <link href="css/manage_account.css" rel="stylesheet">
 </head>
 
 <body>
