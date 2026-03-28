@@ -3,6 +3,7 @@
     $is_manage_account = ($current_page === 'manage_account.php');
     $is_about = ($current_page === 'about.php');
     $is_home = ($current_page === 'index.php');
+    $is_contact = ($current_page === 'contact.php');
 ?>
 <nav class="navbar navbar-expand-lg bg-body-tertiary rounded" aria-label="Thirteenth navbar example">
   <div class="container-fluid">
@@ -30,6 +31,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="about.php#services">Our Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <?php echo $is_contact ? 'active' : ''; ?>" href="contact.php">Contact Us</a>
         </li>
       </ul>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">

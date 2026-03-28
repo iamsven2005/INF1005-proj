@@ -191,27 +191,27 @@
 	
 	<style>
 		.account-section {
-			background: #f8f9fa;
+			background: #212529; /* Darked to match */
 			border-radius: 8px;
 			padding: 20px;
 			margin-bottom: 20px;
-            color: #000;
+            color: #fff;
 		}
 		.account-section h3 {
 			margin-bottom: 15px;
-			color: #333;
+			color: #fff;
 		}
 		.info-display {
-			background: white;
+			background: #343a40; /* Darked to match */
 			padding: 15px;
 			border-radius: 5px;
 			margin-bottom: 15px;
-            color: #000;
+            color: #fff;
 		}
 		.danger-zone {
-			background: #fff5f5;
+			background: #4a151b; /* Darked red tint */
 			border: 2px solid #dc3545;
-            color: #000;
+            color: #fff;
 		}
 	</style>
 </head>
@@ -219,13 +219,13 @@
 <body>
     <?php include "inc/nav.inc.php"; ?>
 	
-<main class="container py-5">
+<main class="container py-5 text-white">
   <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
     <div>
       <h1 class="h3 mb-1">Account settings</h1>
-      <p class="text-muted mb-0">Manage your profile details and security preferences.</p>
+      <p class="text-white mb-0">Manage your profile details and security preferences.</p>
     </div>
-    <a href="index.php" class="btn btn-outline-secondary">
+    <a href="index.php" class="btn btn-outline-light">
       <i class="bi bi-arrow-left"></i> Back to home
     </a>
   </div>
@@ -248,25 +248,25 @@
     <div class="row g-4">
       <!-- Left column: Profile -->
       <div class="col-lg-7">
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-danger bg-dark text-white">
           <div class="card-body p-4">
             <div class="d-flex align-items-start justify-content-between">
               <div>
                 <h2 class="h5 mb-1">Profile</h2>
-                <p class="text-muted mb-0">Update your username and email address.</p>
+                <p class="text-white mb-0">Update your username and email address.</p>
               </div>
-              <span class="badge bg-light text-dark border">
+              <span class="badge bg-secondary text-white border border-secondary">
                 Member since <?= htmlspecialchars(date('M Y', strtotime($userData['created_at']))) ?>
               </span>
             </div>
 
-            <hr class="my-4">
+            <hr class="my-4 border-secondary">
 
             <!-- Username -->
             <div class="mb-4">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
-                  <div class="text-muted small">Username</div>
+                  <div class="text-white small">Username</div>
                   <div class="fw-semibold"><?= htmlspecialchars($userData['username']) ?></div>
                 </div>
                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#usernameForm">
@@ -275,18 +275,18 @@
               </div>
 
               <div class="collapse mt-3" id="usernameForm">
-                <form method="POST" class="border rounded-3 p-3 bg-light">
+                <form method="POST" class="border border-secondary rounded-3 p-3 bg-dark">
                   <div class="mb-2">
                     <label for="username" class="form-label small mb-1">New username</label>
-                    <input type="text" class="form-control" id="username" name="username"
+                    <input type="text" class="form-control bg-dark text-white border-secondary" id="username" name="username"
                            value="<?= htmlspecialchars($userData['username']) ?>" required>
-                    <div class="form-text">3–30 characters. Letters, numbers, underscores, hyphens.</div>
+                    <div class="form-text text-white">3–30 characters. Letters, numbers, underscores, hyphens.</div>
                   </div>
                   <div class="d-flex gap-2">
                     <button type="submit" name="update_username" class="btn btn-success">
                       Save changes
                     </button>
-                    <button type="button" class="btn btn-outline-secondary"
+                    <button type="button" class="btn btn-outline-light"
                             data-bs-toggle="collapse" data-bs-target="#usernameForm">
                       Cancel
                     </button>
@@ -299,7 +299,7 @@
             <div class="mb-0">
               <div class="d-flex align-items-center justify-content-between">
                 <div>
-                  <div class="text-muted small">Email</div>
+                  <div class="text-white small">Email</div>
                   <div class="fw-semibold"><?= htmlspecialchars($userData['email']) ?></div>
                 </div>
                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#emailForm">
@@ -308,17 +308,17 @@
               </div>
 
               <div class="collapse mt-3" id="emailForm">
-                <form method="POST" class="border rounded-3 p-3 bg-light">
+                <form method="POST" class="border border-secondary rounded-3 p-3 bg-dark">
                   <div class="mb-2">
                     <label for="email" class="form-label small mb-1">New email address</label>
-                    <input type="email" class="form-control" id="email" name="email"
+                    <input type="email" class="form-control bg-dark text-white border-secondary" id="email" name="email"
                            value="<?= htmlspecialchars($userData['email']) ?>" required>
                   </div>
                   <div class="d-flex gap-2">
                     <button type="submit" name="update_email" class="btn btn-success">
                       Save changes
                     </button>
-                    <button type="button" class="btn btn-outline-secondary"
+                    <button type="button" class="btn btn-outline-light"
                             data-bs-toggle="collapse" data-bs-target="#emailForm">
                       Cancel
                     </button>
@@ -331,21 +331,21 @@
         </div>
 
         <!-- Account Info -->
-        <div class="card shadow-sm border-0 mt-4">
+        <div class="card shadow-sm border-danger mt-4 bg-dark text-white">
           <div class="card-body p-4">
             <h2 class="h5 mb-1">Account information</h2>
-            <p class="text-muted mb-3">Basic information about your account.</p>
+            <p class="text-white mb-3">Basic information about your account.</p>
 
             <div class="row g-3">
               <div class="col-md-6">
-                <div class="p-3 border rounded-3">
-                  <div class="text-muted small">User ID</div>
+                <div class="p-3 border border-secondary rounded-3">
+                  <div class="text-white small">User ID</div>
                   <div class="fw-semibold"><?= htmlspecialchars((string)$user_id) ?></div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="p-3 border rounded-3">
-                  <div class="text-muted small">Created</div>
+                <div class="p-3 border border-secondary rounded-3">
+                  <div class="text-white small">Created</div>
                   <div class="fw-semibold"><?= htmlspecialchars(date('F j, Y', strtotime($userData['created_at']))) ?></div>
                 </div>
               </div>
@@ -356,37 +356,37 @@
 
       <!-- Right column: Security + Danger -->
       <div class="col-lg-5">
-        <div class="card shadow-sm border-0">
+        <div class="card shadow-sm border-danger bg-dark text-white">
           <div class="card-body p-4">
             <h2 class="h5 mb-1">Security</h2>
-            <p class="text-muted mb-0">Change your password regularly to keep your account safe.</p>
+            <p class="text-white mb-0">Change your password regularly to keep your account safe.</p>
 
-            <hr class="my-4">
+            <hr class="my-4 border-secondary">
 
             <button class="btn btn-primary w-100" data-bs-toggle="collapse" data-bs-target="#passwordForm">
               Change password
             </button>
 
             <div class="collapse mt-3" id="passwordForm">
-              <form method="POST" class="border rounded-3 p-3 bg-light">
+              <form method="POST" class="border border-secondary rounded-3 p-3 bg-dark">
                 <div class="mb-2">
                   <label for="current_password" class="form-label small mb-1">Current password</label>
-                  <input type="password" class="form-control" id="current_password" name="current_password" required>
+                  <input type="password" class="form-control bg-dark text-white border-secondary" id="current_password" name="current_password" required>
                 </div>
                 <div class="mb-2">
                   <label for="new_password" class="form-label small mb-1">New password</label>
-                  <input type="password" class="form-control" id="new_password" name="new_password" required>
-                  <div class="form-text">8+ chars with upper, lower, number, special.</div>
+                  <input type="password" class="form-control bg-dark text-white border-secondary" id="new_password" name="new_password" required>
+                  <div class="form-text text-white">8+ chars with upper, lower, number, special.</div>
                 </div>
                 <div class="mb-3">
                   <label for="confirm_password" class="form-label small mb-1">Confirm new password</label>
-                  <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                  <input type="password" class="form-control bg-dark text-white border-secondary" id="confirm_password" name="confirm_password" required>
                 </div>
                 <div class="d-flex gap-2">
                   <button type="submit" name="update_password" class="btn btn-success">
                     Save
                   </button>
-                  <button type="button" class="btn btn-outline-secondary"
+                  <button type="button" class="btn btn-outline-light"
                           data-bs-toggle="collapse" data-bs-target="#passwordForm">
                     Cancel
                   </button>
@@ -397,10 +397,10 @@
           </div>
         </div>
 
-        <div class="card shadow-sm border-0 mt-4 border-danger-subtle">
+        <div class="card shadow-sm mt-4 border-danger bg-dark text-white">
           <div class="card-body p-4">
             <h2 class="h5 text-danger mb-1">Danger zone</h2>
-            <p class="text-muted mb-3">Delete your account and permanently remove your data. This cannot be undone.</p>
+            <p class="text-white mb-3">Delete your account and permanently remove your data. This cannot be undone.</p>
 
             <button class="btn btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteModal">
               Delete account
@@ -411,10 +411,10 @@
     </div>
 
 <!-- My Bookings -->
-<div class="card shadow-sm border-0 mt-4">
+<div class="card shadow-sm mt-4 border-danger bg-dark text-white">
   <div class="card-body p-4">
     <h2 class="h5 mb-1">My bookings</h2>
-    <p class="text-muted mb-3">View upcoming and past bookings.</p>
+    <p class="text-white mb-3">View upcoming and past bookings.</p>
 
     <ul class="nav nav-pills mb-3" id="bookingTabs" role="tablist">
       <li class="nav-item" role="presentation">
@@ -435,10 +435,10 @@
       <!-- Upcoming -->
       <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
         <?php if (empty($upcomingBookings)): ?>
-          <div class="text-muted">No upcoming bookings.</div>
+          <div class="text-white">No upcoming bookings.</div>
         <?php else: ?>
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-dark table-hover align-middle mb-0">
               <thead>
                 <tr>
                   <th>Ref</th>
@@ -456,7 +456,7 @@
                     <td class="fw-semibold"><?= htmlspecialchars($b['bookingRef']); ?></td>
                     <td>
                       <?= htmlspecialchars($b['roomName']); ?>
-                      <div class="text-muted small"><?= htmlspecialchars($b['roomLocation']); ?></div>
+                      <div class="text-white small"><?= htmlspecialchars($b['roomLocation']); ?></div>
                     </td>
                     <td><?= htmlspecialchars($b['bookingDate']); ?></td>
                     <td><?= htmlspecialchars(substr($b['bookingTimeslot'], 0, 5)); ?></td>
@@ -474,10 +474,10 @@
       <!-- Past -->
       <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
         <?php if (empty($pastBookings)): ?>
-          <div class="text-muted">No past bookings.</div>
+          <div class="text-white">No past bookings.</div>
         <?php else: ?>
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-dark table-hover align-middle mb-0">
               <thead>
                 <tr>
                   <th>Ref</th>
@@ -495,7 +495,7 @@
                     <td class="fw-semibold"><?= htmlspecialchars($b['bookingRef']); ?></td>
                     <td>
                       <?= htmlspecialchars($b['roomName']); ?>
-                      <div class="text-muted small"><?= htmlspecialchars($b['roomLocation']); ?></div>
+                      <div class="text-white small"><?= htmlspecialchars($b['roomLocation']); ?></div>
                     </td>
                     <td><?= htmlspecialchars($b['bookingDate']); ?></td>
                     <td><?= htmlspecialchars(substr($b['bookingTimeslot'], 0, 5)); ?></td>
@@ -528,7 +528,7 @@
 	<!-- Delete Account Confirmation Modal -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
-			<div class="modal-content">
+            <div class="modal-content border-danger bg-dark text-white">
 				<div class="modal-header bg-danger text-white">
 					<h5 class="modal-title" id="deleteModalLabel">Confirm Account Deletion</h5>
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -537,12 +537,12 @@
 					<div class="modal-body">
 						<p class="text-danger"><strong>Warning:</strong> This will permanently delete your account and all associated data.</p>
 						<div class="mb-3">
-							<label for="delete_password" style="color: #000;" class="form-label">Enter your password to confirm:</label>
-							<input type="password" class="form-control" id="delete_password" 
+                            <label for="delete_password" style="color: #fff;" class="form-label">Enter your password to confirm:</label>
+							<input type="password" class="form-control bg-dark text-white border-secondary" id="delete_password" 
 								   name="delete_password" required>
 						</div>
 					</div>
-					<div class="modal-footer">
+					<div class="modal-footer border-secondary">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 						<button type="submit" name="delete_account" class="btn btn-danger">Delete My Account</button>
 					</div>
