@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache rewrite
-RUN a2enmod rewrite
+RUN a2enmod rewrite && \
+    echo '<Directory /var/www/html>\n    AllowOverride None\n    Require all granted\n</Directory>\nErrorDocument 404 /404.php' \
+    >> /etc/apache2/sites-available/000-default.conf
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
