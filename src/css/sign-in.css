@@ -111,6 +111,35 @@ main {
   border-top-right-radius: 0;
 }
 
+.password-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #5a6270;
+  background: none;
+  border: none;
+  padding: 0;
+  z-index: 10;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #cc3333;
+}
+
+.password-toggle svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
 .form-control.is-invalid {
   border-color: #8b3a28 !important;
   background-image: none !important;
