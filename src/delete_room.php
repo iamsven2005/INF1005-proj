@@ -148,7 +148,7 @@ $conn->close();
                 <!-- search -->
                 <div class="col-md-6">
                     <div class="input-group">
-                        <span class="input-group-text bg-dark text-light border-secondary">Search:</span>
+                        <span class="input-group-text bg-dark text-white border-secondary">Search:</span>
                         <input type="text" id="adminSearchInput" class="form-control bg-dark text-light border-secondary" onkeyup="filterTable()" placeholder="Search by name or ID..." aria-label="Search">
                     </div>
                 </div>
@@ -156,7 +156,7 @@ $conn->close();
                 <!-- sorting -->
                 <div class="col-md-3">
                     <form action="delete_room.php" method="GET">
-                        <select name="sort" class="form-select bg-dark text-light border-secondary" onchange="this.form.submit()">
+                        <select name="sort" class="form-select bg-dark text-white border-secondary" onchange="this.form.submit()">
                             <option value="newest" <?php if ($sort == 'newest') echo 'selected'; ?>>Newest First</option>
                             <option value="oldest" <?php if ($sort == 'oldest') echo 'selected'; ?>>Oldest First</option>
                             <option value="name_asc" <?php if ($sort == 'name_asc') echo 'selected'; ?>>Name (A-Z)</option>
@@ -228,7 +228,7 @@ $conn->close();
                 <a href="index.php" class="btn btn-outline-light">Back to Home</a>
             </div>
         </div>
-        <h2 class="text-center mb-4 text-warning">Manage Bookings</h2>
+        <h2 class="text-center mt-5 mb-4 text-warning">Manage Bookings</h2>
 
 <div class="table-responsive container">
     <table class="table table-dark table-hover align-middle">
@@ -288,7 +288,7 @@ $conn->close();
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="input-group">
-                <span class="input-group-text bg-dark text-light border-secondary">Search:</span>
+                <span class="input-group-text bg-dark text-white border-secondary">Search:</span>
                 <input type="text" id="adminReviewSearchInput" class="form-control bg-dark text-light border-secondary" onkeyup="filterReviewTable()" placeholder="Search by review ID, room, user, or email..." aria-label="Search reviews">
             </div>
         </div>
