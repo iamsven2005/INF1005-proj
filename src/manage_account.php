@@ -12,6 +12,13 @@
 	$errorMsg = "";
 	$successMsg = "";
 	
+    // Catch success messages from the edit review redirect
+    if (isset($_GET['msg'])) {
+        if ($_GET['msg'] === 'review_updated') {
+            $successMsg = "Review updated successfully!";
+        }
+    }
+
 	// Fetch current user data
 	$userData = getUserData($user_id);
 	
@@ -40,8 +47,17 @@
 	AND TIMESTAMP(b.bookingDate, b.bookingTimeslot) < NOW()
 	ORDER BY b.bookingDate DESC, b.bookingTimeslot DESC";
 
+    // Fetch User's Reviews
+	$sqlReviews = "SELECT 
+		rv.reviewID, rv.rating, rv.comment, rv.created_at, r.roomName 
+	FROM Reviews rv
+	JOIN Rooms r ON rv.Rooms_roomID = r.roomID
+	WHERE rv.Users_userID = ?
+	ORDER BY rv.created_at DESC";
+
 	$upcomingBookings = [];
 	$pastBookings = [];
+    $userReviews = [];
 
 	// prepared statements (safer)
 	$stmt = $conn->prepare($sqlUpcoming);
@@ -58,7 +74,12 @@
 	if ($res) $pastBookings = $res->fetch_all(MYSQLI_ASSOC);
 	$stmt->close();
 
-	$conn->close();
+    $stmt = $conn->prepare($sqlReviews);
+	$stmt->bind_param("i", $user_id);
+	$stmt->execute();
+	$res = $stmt->get_result();
+	if ($res) $userReviews = $res->fetch_all(MYSQLI_ASSOC);
+	$stmt->close();
 
 
 
@@ -70,6 +91,28 @@
 	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		$updateSuccess = true;
 		
+        // Delete Review
+		if (isset($_POST['delete_review'])) {
+			$review_id = (int)$_POST['review_id'];
+			
+            // Ensure they can only delete their own review
+			$delStmt = $conn->prepare("DELETE FROM Reviews WHERE reviewID = ? AND Users_userID = ?");
+			$delStmt->bind_param("ii", $review_id, $user_id);
+			
+            if ($delStmt->execute() && $delStmt->affected_rows > 0) {
+				$successMsg = "Review deleted successfully!";
+                // Remove the deleted review from the array so it disappears immediately
+                foreach ($userReviews as $key => $rev) {
+                    if ($rev['reviewID'] == $review_id) {
+                        unset($userReviews[$key]);
+                    }
+                }
+			} else {
+				$errorMsg .= "Failed to delete review.<br>";
+			}
+			$delStmt->close();
+		}
+
 		// Update Username
 		if (isset($_POST['update_username'])) {
 			$new_username = sanitize_input($_POST['username']);
@@ -175,6 +218,8 @@
 			}
 		}
 	}
+
+    $conn->close();
 ?>
 
 <!doctype html>
@@ -410,125 +455,179 @@
       </div>
     </div>
 
-<!-- My Bookings -->
-<div class="card shadow-sm mt-4 border-danger bg-dark text-white">
-  <div class="card-body p-4">
-    <h2 class="h5 mb-1">My bookings</h2>
-    <p class="text-white mb-3">View upcoming and past bookings.</p>
+    <!-- My Bookings -->
+    <div class="card shadow-sm mt-4 border-danger bg-dark text-white">
+    <div class="card-body p-4">
+        <h2 class="h5 mb-1">My bookings</h2>
+        <p class="text-white mb-3">View upcoming and past bookings.</p>
 
-    <ul class="nav nav-pills mb-3" id="bookingTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="pill" data-bs-target="#upcoming"
-                type="button" role="tab" aria-controls="upcoming" aria-selected="true">
-          Upcoming
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="past-tab" data-bs-toggle="pill" data-bs-target="#past"
-                type="button" role="tab" aria-controls="past" aria-selected="false">
-          Past
-        </button>
-      </li>
-    </ul>
+        <ul class="nav nav-pills mb-3" id="bookingTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="upcoming-tab" data-bs-toggle="pill" data-bs-target="#upcoming"
+                    type="button" role="tab" aria-controls="upcoming" aria-selected="true">
+            Upcoming
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="past-tab" data-bs-toggle="pill" data-bs-target="#past"
+                    type="button" role="tab" aria-controls="past" aria-selected="false">
+            Past
+            </button>
+        </li>
+        </ul>
 
-    <div class="tab-content" id="bookingTabsContent">
-      <!-- Upcoming -->
-      <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
-        <?php if (empty($upcomingBookings)): ?>
-          <div class="text-white">No upcoming bookings.</div>
-        <?php else: ?>
-          <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0">
-              <thead>
-                <tr>
-                  <th>Ref</th>
-                  <th>Room</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Players</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($upcomingBookings as $b): ?>
-                  <tr>
-                    <td class="fw-semibold"><?= htmlspecialchars($b['bookingRef']); ?></td>
-                    <td>
-                      <?= htmlspecialchars($b['roomName']); ?>
-                      <div class="text-white small"><?= htmlspecialchars($b['roomLocation']); ?></div>
-                    </td>
-                    <td><?= htmlspecialchars($b['bookingDate']); ?></td>
-                    <td><?= htmlspecialchars(substr($b['bookingTimeslot'], 0, 5)); ?></td>
-                    <td><?= (int)$b['numPlayers']; ?></td>
-                    <td>$<?= htmlspecialchars($b['totalPrice']); ?></td>
-                    <td><span class="badge bg-success">Confirmed</span></td>
-                  </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
-          </div>
-        <?php endif; ?>
-      </div>
+        <div class="tab-content" id="bookingTabsContent">
+        <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+            <?php if (empty($upcomingBookings)): ?>
+            <div class="text-white">No upcoming bookings.</div>
+            <?php else: ?>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                    <th>Ref</th>
+                    <th>Room</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Players</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($upcomingBookings as $b): ?>
+                    <tr>
+                        <td class="fw-semibold"><?= htmlspecialchars($b['bookingRef']); ?></td>
+                        <td>
+                        <?= htmlspecialchars($b['roomName']); ?>
+                        <div class="text-white small"><?= htmlspecialchars($b['roomLocation']); ?></div>
+                        </td>
+                        <td><?= htmlspecialchars($b['bookingDate']); ?></td>
+                        <td><?= htmlspecialchars(substr($b['bookingTimeslot'], 0, 5)); ?></td>
+                        <td><?= (int)$b['numPlayers']; ?></td>
+                        <td>$<?= htmlspecialchars($b['totalPrice']); ?></td>
+                        <td><span class="badge bg-success">Confirmed</span></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                </table>
+            </div>
+            <?php endif; ?>
+        </div>
 
-      <!-- Past -->
-      <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
-        <?php if (empty($pastBookings)): ?>
-          <div class="text-white">No past bookings.</div>
-        <?php else: ?>
-          <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0">
-              <thead>
-                <tr>
-                  <th>Ref</th>
-                  <th>Room</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Players</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($pastBookings as $b): ?>
-                  <tr>
-                    <td class="fw-semibold"><?= htmlspecialchars($b['bookingRef']); ?></td>
-                    <td>
-                      <?= htmlspecialchars($b['roomName']); ?>
-                      <div class="text-white small"><?= htmlspecialchars($b['roomLocation']); ?></div>
-                    </td>
-                    <td><?= htmlspecialchars($b['bookingDate']); ?></td>
-                    <td><?= htmlspecialchars(substr($b['bookingTimeslot'], 0, 5)); ?></td>
-                    <td><?= (int)$b['numPlayers']; ?></td>
-                    <td>$<?= htmlspecialchars($b['totalPrice']); ?></td>
-                    <td>
-                      <?php if ($b['bookingStatus'] === 'Cancelled'): ?>
-                        <span class="badge bg-danger">Cancelled</span>
-                      <?php else: ?>
-                        <span class="badge bg-secondary">Completed</span>
-                      <?php endif; ?>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
-          </div>
-        <?php endif; ?>
-      </div>
+        <!-- Past -->
+        <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+            <?php if (empty($pastBookings)): ?>
+            <div class="text-white">No past bookings.</div>
+            <?php else: ?>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                    <th>Ref</th>
+                    <th>Room</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Players</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($pastBookings as $b): ?>
+                    <tr>
+                        <td class="fw-semibold"><?= htmlspecialchars($b['bookingRef']); ?></td>
+                        <td>
+                        <?= htmlspecialchars($b['roomName']); ?>
+                        <div class="text-white small"><?= htmlspecialchars($b['roomLocation']); ?></div>
+                        </td>
+                        <td><?= htmlspecialchars($b['bookingDate']); ?></td>
+                        <td><?= htmlspecialchars(substr($b['bookingTimeslot'], 0, 5)); ?></td>
+                        <td><?= (int)$b['numPlayers']; ?></td>
+                        <td>$<?= htmlspecialchars($b['totalPrice']); ?></td>
+                        <td>
+                        <?php if ($b['bookingStatus'] === 'Cancelled'): ?>
+                            <span class="badge bg-danger">Cancelled</span>
+                        <?php else: ?>
+                            <span class="badge bg-secondary">Completed</span>
+                        <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                </table>
+            </div>
+            <?php endif; ?>
+        </div>
 
+        </div>
     </div>
-  </div>
-</div>
+    </div>
+
+    <div class="card shadow-sm mt-4 border-danger bg-dark text-white mb-5">
+      <div class="card-body p-4">
+        <h2 class="h5 mb-1">My Ratings</h2>
+        <p class="text-white mb-3">Manage your room reviews and feedback.</p>
+
+        <?php if (empty($userReviews)): ?>
+          <div class="text-white">You haven't submitted any reviews yet.</div>
+        <?php else: ?>
+          <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Room</th>
+                  <th>Rating</th>
+                  <th>Comment</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($userReviews as $r): ?>
+                  <?php 
+                    // Truncate comment if it's over 200 characters
+                    $rawComment = $r['comment'] ?: 'No comment';
+                    $shortComment = strlen($rawComment) > 200 ? substr($rawComment, 0, 200) . '...' : $rawComment;
+                  ?>
+                  <tr>
+                    <td class="fw-semibold"><?= htmlspecialchars($r['roomName']); ?></td>
+                    <td class="text-warning text-nowrap">
+                        <?php 
+                        echo str_repeat('&#9733;', $r['rating']); 
+                        echo str_repeat('&#9734;', 5 - $r['rating']); 
+                        ?>
+                    </td>
+                    <td style="max-width: 300px; white-space: normal; overflow-wrap: break-word;">
+                        <?= htmlspecialchars($shortComment); ?>
+                    </td>
+                    <td class="text-nowrap"><?= htmlspecialchars(date('M j, Y', strtotime($r['created_at']))); ?></td>
+                    <td>
+                      <div class="d-flex gap-2">
+                          <a href="edit_review.php?id=<?= $r['reviewID']; ?>" class="btn btn-sm btn-outline-light">Edit</a>
+                          <form method="POST" onsubmit="return confirm('Are you sure you want to delete this review?');" class="m-0">
+                              <input type="hidden" name="review_id" value="<?= $r['reviewID']; ?>">
+                              <button type="submit" name="delete_review" class="btn btn-sm btn-outline-danger">Delete</button>
+                          </form>
+                      </div>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php endif; ?>
+      </div>
+    </div>
 
 
   <?php endif; ?>
 </main>
 
 
-	<!-- Delete Account Confirmation Modal -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
-            <div class="modal-content border-danger bg-dark text-white">
+			<div class="modal-content border-danger bg-dark text-white">
 				<div class="modal-header bg-danger text-white">
 					<h5 class="modal-title" id="deleteModalLabel">Confirm Account Deletion</h5>
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -537,7 +636,7 @@
 					<div class="modal-body">
 						<p class="text-danger"><strong>Warning:</strong> This will permanently delete your account and all associated data.</p>
 						<div class="mb-3">
-                            <label for="delete_password" style="color: #fff;" class="form-label">Enter your password to confirm:</label>
+							<label for="delete_password" style="color: #fff;" class="form-label">Enter your password to confirm:</label>
 							<input type="password" class="form-control bg-dark text-white border-secondary" id="delete_password" 
 								   name="delete_password" required>
 						</div>
