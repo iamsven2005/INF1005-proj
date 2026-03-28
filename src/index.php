@@ -116,10 +116,10 @@ $conn->close();
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#filterCollapse"
-                        aria-expanded="true"
+                        aria-expanded="false"
                         aria-controls="filterCollapse"
                         id="filterToggleBtn">
-                    Hide filters
+                    Show filters
                 </button>
             </div>
             <div class="collapse" id="filterCollapse">
@@ -347,6 +347,20 @@ $conn->close();
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        
+        let filterCollapse = document.getElementById('filterCollapse');
+        let filterToggleBtn = document.getElementById('filterToggleBtn');
+        
+        if (filterCollapse && filterToggleBtn) {
+            filterCollapse.addEventListener('show.bs.collapse', function () {
+                filterToggleBtn.textContent = 'Hide filters';
+            });
+            filterCollapse.addEventListener('hide.bs.collapse', function () {
+                filterToggleBtn.textContent = 'Show filters';
+            });
+        }
+        
+        
         let dateInput = document.getElementById('dateFilter');
         if(dateInput) {
             let now = new Date();
