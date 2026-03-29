@@ -636,3 +636,28 @@ hr {
 .date-filter-input {
     max-width: 200px;
 }
+
+/* for admin table action buttons */
+td:last-child {
+  white-space: nowrap;
+}
+
+/* for admin form labels */
+.form-label,
+label {
+  color: var(--text) !important;
+}
+
+select.form-control,
+select.form-select {
+  color: var(--text) !important;
+  background-color: var(--dark) !important;
+}
+
+/* ======== admin form text visibility ======== */
+p, small, .form-text {
+  color: var(--text) !important;
+}
+.text-light {
+  color: var(--text) !important;
+}
